@@ -1,10 +1,11 @@
 import re
 from typing import (
     Annotated,
-    Union,
-    Optional,
-    Dict,
     Any,
+    Dict,
+    Literal,
+    Optional,
+    Union,
 )
 
 from pydantic import (
@@ -13,13 +14,79 @@ from pydantic import (
     model_validator,
 )
 
-from settings import ColumnSetting
-from base import BaseUpdatableModel
-from utils import (
+from .base import BaseUpdatableModel
+from .settings import ColumnSetting
+from .utils import (
     catch_str,
-    split_dtype,
     only_one,
+    split_dtype,
 )
+
+
+class BaseType(BaseUpdatableModel):
+    """Base Type"""
+
+    type: Annotated[str, Field(description="Type of implemented data")]
+
+
+class IntType(BaseUpdatableModel):
+    """Integer Type"""
+
+    type: Literal["int", "integer"]
+
+    @field_validator("type", mode="after")
+    def prepare_type(cls, _: Literal["int", "integer"]) -> Literal["integer"]:
+        return "integer"
+
+
+class VarcharType(BaseType):
+    """Variable Character Type"""
+
+    type: Literal["varchar"]
+    max_length: Optional[int] = Field(default=None, le=8000, ge=-1)
+
+
+class NVarcharType(VarcharType):
+    """N Variable Character Type"""
+
+    type: Literal["nvarchar"]
+
+
+class NumericType(BaseType):
+    """Numeric Type"""
+
+    type: Literal["numeric"]
+    precision: Optional[int] = Field(default=None, description="")
+    scale: Optional[int] = Field(default=None)
+
+
+class TimestampType(BaseType):
+    """Time Type"""
+
+    type: Literal["timestamp"]
+    precision: Optional[int] = Field(default=None)
+    timezone: bool = Field(default=False, description="Time zone flag")
+
+
+DTypes = Union[
+    VarcharType,
+    NVarcharType,
+    NumericType,
+    TimestampType,
+    IntType,
+    BaseType,
+]
+
+
+class BaseColumn(BaseUpdatableModel):
+    name: Annotated[
+        str,
+        Field(
+            description="Name of Column",
+            alias="ColumnName",
+        ),
+    ]
+    dtype: DTypes = Field(union_mode="smart")
 
 
 class Column(BaseUpdatableModel):
@@ -32,9 +99,12 @@ class Column(BaseUpdatableModel):
             alias="ColumnName",
         ),
     ]
-    datatype: Annotated[
+    dtype: Annotated[
         Union[dict, str],
-        Field(description="Data type of value of this column", alias="DataType"),
+        Field(
+            description="Data type of value of this column",
+            alias="DataType",
+        ),
     ]
 
     # Default value
@@ -91,7 +161,9 @@ class Column(BaseUpdatableModel):
         - serial not null primary key
         """
         if not (
-            datatype_key := only_one(values, ColumnSetting.datatype, default=False)
+            datatype_key := only_one(
+                values, ColumnSetting.datatype, default=False
+            )
         ):
             raise ValueError("datatype does not contain in values")
 

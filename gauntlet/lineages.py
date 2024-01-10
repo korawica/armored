@@ -1,16 +1,16 @@
+from datetime import date, datetime
 from typing import (
     Annotated,
-    Optional,
     List,
+    Optional,
 )
-from datetime import datetime, date
 
 from pydantic import (
     Field,
     field_validator,
 )
 
-from base import BaseUpdatableModel
+from .base import BaseUpdatableModel
 
 
 class Tag(BaseUpdatableModel):

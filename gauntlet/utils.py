@@ -1,5 +1,7 @@
 import re
 from typing import (
+    Any,
+    List,
     Optional,
     Tuple,
     Union,
@@ -10,7 +12,7 @@ def catch_str(
     value: str,
     key: str,
     *,
-    replace: Optional = None,
+    replace: Optional[str] = None,
     flag: bool = True,
 ) -> Tuple[str, Optional[Union[bool, str]]]:
     """Catch keyword from string value and return True if exits"""
@@ -33,12 +35,13 @@ def split_dtype(dtype: str) -> Tuple[str, str]:
 
 
 def only_one(
-    check_list: list,
-    match_list: list,
+    check_list: List[Any],
+    match_list: List[Any],
     default: bool = True,
-) -> Optional:
-    """
-    Examples:
+) -> Any:
+    """Get only one value from the checking list that match with ordered value on
+    the matching list.
+        Examples:
         >>> list_a = ['a', 'a', 'b']
         >>> list_b = ['a', 'b', 'c']
         >>> list_c = ['d', 'f']
