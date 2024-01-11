@@ -30,6 +30,9 @@ Homepage = "https://github.com/korawica/gauntlet/"
 [project.optional-dependencies]
 test = ["pytest==7.4.4", "clishelf==0.1.2"]
 
+[project.scripts]
+gauntlet = "gauntlet:main"
+
 [build-system]
 requires = ["flit_core<4"]
 build-backend = "flit_core.buildapi"
