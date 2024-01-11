@@ -1,16 +1,14 @@
 from typing import (
-    Dict,
-    Union,
-    Any,
     AbstractSet,
+    Any,
+    Union,
 )
 
 from pydantic import BaseModel, ConfigDict
 
-
 AbstractSetOrDict = Union[
     AbstractSet[Union[int, str]],
-    Dict[Union[int, str], Any],
+    dict[Union[int, str], Any],
 ]
 
 
@@ -32,7 +30,9 @@ class BaseUpdatableModel(BaseModel):
     def get_properties(cls) -> list:
         """Return list of properties of this model"""
         return [
-            prop for prop in cls.__dict__ if isinstance(cls.__dict__[prop], property)
+            prop
+            for prop in cls.__dict__
+            if isinstance(cls.__dict__[prop], property)
         ]
 
     def dict(
@@ -43,8 +43,8 @@ class BaseUpdatableModel(BaseModel):
         by_alias: bool = False,
         exclude_unset: bool = False,
         exclude_defaults: bool = False,
-        **kwargs
-    ) -> Dict[str, Any]:
+        **kwargs,
+    ) -> dict[str, Any]:
         """Override the dict function to include our properties
         docs: https://github.com/pydantic/pydantic/issues/935
         """
@@ -54,7 +54,7 @@ class BaseUpdatableModel(BaseModel):
             by_alias=by_alias,
             exclude_unset=exclude_unset,
             exclude_defaults=exclude_defaults,
-            **kwargs
+            **kwargs,
         )
         props: list = self.get_properties()
 
@@ -75,6 +75,8 @@ class BaseUpdatableModel(BaseModel):
         """
         update = self.dict()
         update.update(data)
-        for k, v in self.model_validate(update).dict(exclude_defaults=True).items():
+        for k, v in (
+            self.model_validate(update).dict(exclude_defaults=True).items()
+        ):
             setattr(self, k, v)
         return self

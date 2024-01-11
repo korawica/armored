@@ -67,7 +67,7 @@ strict = true
 warn_unreachable = true
 warn_unused_ignores = false
 exclude = [
-    '__version\.py$',
+    '__main__\.py$',
 ]
 
 [tool.black]

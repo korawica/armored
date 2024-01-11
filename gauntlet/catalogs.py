@@ -2,7 +2,6 @@ import re
 from typing import (
     Annotated,
     Any,
-    Dict,
     Literal,
     Optional,
     Union,
@@ -175,7 +174,7 @@ class Column(BaseUpdatableModel):
             )
 
         _datatype, _nullable = split_dtype(pre_datatype)
-        values_update: Dict[str, Any] = {"nullable": False}
+        values_update: dict[str, Any] = {"nullable": False}
 
         # Remove unique value from datatype
         _datatype, values_update["unique"] = catch_str(_datatype, key="unique")

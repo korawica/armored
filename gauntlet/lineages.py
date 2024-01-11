@@ -1,7 +1,6 @@
 from datetime import date, datetime
 from typing import (
     Annotated,
-    List,
     Optional,
 )
 
@@ -25,7 +24,7 @@ class Tag(BaseUpdatableModel):
         Field(repr=False, description="Description"),
     ] = None
     labels: Annotated[
-        List[str],
+        list[str],
         Field(default_factory=list, description="Labels"),
     ]
     vs: Annotated[

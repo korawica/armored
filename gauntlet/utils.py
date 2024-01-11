@@ -1,9 +1,7 @@
 import re
 from typing import (
     Any,
-    List,
     Optional,
-    Tuple,
     Union,
 )
 
@@ -14,7 +12,7 @@ def catch_str(
     *,
     replace: Optional[str] = None,
     flag: bool = True,
-) -> Tuple[str, Optional[Union[bool, str]]]:
+) -> tuple[str, Optional[Union[bool, str]]]:
     """Catch keyword from string value and return True if exits"""
     if key in value:
         return (
@@ -24,7 +22,7 @@ def catch_str(
     return value, (False if flag else None)
 
 
-def split_dtype(dtype: str) -> Tuple[str, str]:
+def split_dtype(dtype: str) -> tuple[str, str]:
     """Split the datatype value from long string by null string"""
     _nullable: str = "null"
     for null_str in ["not null", "null"]:
@@ -35,8 +33,8 @@ def split_dtype(dtype: str) -> Tuple[str, str]:
 
 
 def only_one(
-    check_list: List[Any],
-    match_list: List[Any],
+    check_list: list[Any],
+    match_list: list[Any],
     default: bool = True,
 ) -> Any:
     """Get only one value from the checking list that match with ordered value on
