@@ -1,6 +1,6 @@
 import unittest
 
-import gauntlet.catalogs as catalogs
+import armored.catalogs as catalogs
 
 
 class TestColumn(unittest.TestCase):

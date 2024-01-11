@@ -1,8 +1,8 @@
-# Gauntlet
+# Armored
 
-[![test](https://github.com/korawica/gauntlet/actions/workflows/tests.yml/badge.svg?branch=main)](https://github.com/korawica/gauntlet/actions/workflows/tests.yml)
+[![test](https://github.com/korawica/armored/actions/workflows/tests.yml/badge.svg?branch=main)](https://github.com/korawica/armored/actions/workflows/tests.yml)
 
-Gauntlet that implements Model objects for Data Engineer.
+Armored that implements Model objects for Data Engineer.
 
 ## Features
 

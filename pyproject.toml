@@ -1,6 +1,6 @@
 [project]
-name = "gauntlet"
-description = "Gauntlet that implements Model objects for Data Engineer"
+name = "armored"
+description = "Armored that implements Model objects for Data Engineer"
 readme = "README.md"
 license = {file = "LICENSE"}
 maintainers = [{ name = "korawica", email = "korawich.anu@gmail.com" }]
@@ -16,7 +16,7 @@ classifiers = [
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
 ]
-keywords = ['models', 'gauntlet']
+keywords = ['models', 'armored']
 requires-python = ">=3.9.0"
 dependencies = [
     "pydantic==2.5.3",
@@ -24,21 +24,21 @@ dependencies = [
 dynamic = ["version"]
 
 [project.urls]
-Homepage = "https://github.com/korawica/gauntlet/"
-"Source Code" = "https://github.com/korawica/gauntlet/"
+Homepage = "https://github.com/korawica/armored/"
+"Source Code" = "https://github.com/korawica/armored/"
 
 [project.optional-dependencies]
 test = ["pytest==7.4.4", "clishelf==0.1.2"]
 
 [project.scripts]
-gauntlet = "gauntlet:main"
+armored = "armored:main"
 
 [build-system]
 requires = ["flit_core<4"]
 build-backend = "flit_core.buildapi"
 
 [tool.flit.module]
-name = "gauntlet"
+name = "armored"
 
 [tool.flit.sdist]
 include = [
@@ -60,7 +60,7 @@ addopts = [
 
 [tool.mypy]
 python_version = "3.9"
-files = ["gauntlet"]
+files = ["armored"]
 show_error_codes = true
 pretty = true
 strict = true

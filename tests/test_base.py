@@ -1,6 +1,6 @@
 import unittest
 
-import gauntlet.base as base
+import armored.base as base
 
 
 class TestBase(unittest.TestCase):
