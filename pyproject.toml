@@ -1,3 +1,52 @@
+[project]
+name = "gauntlet"
+description = "Gauntlet that implements Model objects for Data Engineer"
+readme = "README.md"
+license = {file = "LICENSE"}
+maintainers = [{ name = "korawica", email = "korawich.anu@gmail.com" }]
+classifiers = [
+    "Topic :: Utilities",
+    "Natural Language :: English",
+    "Development Status :: 4 - Beta",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+]
+keywords = ['models', 'gauntlet']
+requires-python = ">=3.9.0"
+dependencies = [
+    "pydantic==2.5.3",
+]
+dynamic = ["version"]
+
+[project.urls]
+Homepage = "https://github.com/korawica/gauntlet/"
+"Source Code" = "https://github.com/korawica/gauntlet/"
+
+[project.optional-dependencies]
+test = ["pytest==7.4.4", "clishelf==0.1.2"]
+
+[build-system]
+requires = ["flit_core<4"]
+build-backend = "flit_core.buildapi"
+
+[tool.flit.module]
+name = "gauntlet"
+
+[tool.flit.sdist]
+include = [
+    "docs/",
+    "tests/",
+    "CHANGELOG.md",
+]
+exclude = [
+    "examples/",
+]
+
 [tool.pytest.ini_options]
 console_output_style = "count"
 filterwarnings = ["error"]
