@@ -18,6 +18,7 @@ from .dtypes import DataTypes
 from .settings import ColumnSetting
 from .utils import (
     catch_str,
+    extract_dtype,
     only_one,
     split_dtype,
 )
@@ -36,7 +37,7 @@ class BaseColumn(BaseUpdatableModel):
     dtype: Annotated[
         DataTypes,
         Field(
-            union_mode="smart",
+            union_mode="left_to_right",
             description="Data Type of Column",
             alias="DataType",
         ),
@@ -51,12 +52,8 @@ class BaseColumn(BaseUpdatableModel):
     def prepare_str2dtype(cls, value: Union[str, dict, DataTypes]):
         """Prepare string value of dtype"""
         if isinstance(value, str):
-            return {"type": value}
+            return extract_dtype(value)
         return value
-
-
-def prepare_dtype_from_str(values: Any):
-    ...
 
 
 class Column(BaseColumn):

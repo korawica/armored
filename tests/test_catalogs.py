@@ -10,6 +10,18 @@ class TestBaseColumn(unittest.TestCase):
         self.assertEqual("foo", t.name)
         self.assertEqual("base", t.dtype.type)
 
+        t = catalogs.BaseColumn(name="foo", dtype="varchar( 100 )")
+        self.assertEqual("foo", t.name)
+        self.assertEqual("varchar", t.dtype.type)
+        self.assertEqual(100, t.dtype.max_length)
+
+        t = catalogs.BaseColumn(
+            name="foo", dtype={"type": "varchar", "max_length": 100}
+        )
+        self.assertEqual("foo", t.name)
+        self.assertEqual("varchar", t.dtype.type)
+        self.assertEqual(100, t.dtype.max_length)
+
     def test_base_column_model_validate(self):
         t = catalogs.BaseColumn.model_validate(
             {

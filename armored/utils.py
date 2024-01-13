@@ -23,13 +23,23 @@ def catch_str(
 
 
 def split_dtype(dtype: str) -> tuple[str, str]:
-    """Split the datatype value from long string by null string"""
+    """Split the datatype value from long string by null string
+    Examples:
+    >>> split_dtype("string null")
+    ('string', 'null')
+    >>> split_dtype("string not null")
+    ('string', 'not null')
+    >>> split_dtype("string not null null")
+    ('string', 'null')
+    >>> split_dtype("string null null")
+    ('string', 'null')
+    """
     _nullable: str = "null"
     for null_str in ["not null", "null"]:
-        if re.search(null_str, dtype):
+        if re.search(null_str.lower(), dtype):
             _nullable = null_str
-            dtype = dtype.replace(null_str, "")
-    return " ".join(dtype.strip().split()), _nullable
+            dtype = dtype.lower().replace(null_str, "")
+    return " ".join(dtype.strip().split()).lower(), _nullable
 
 
 def only_one(
@@ -54,3 +64,30 @@ def only_one(
         (_ for _ in match_list if _ in check_list),
         (match_list[0] if default else None),
     )
+
+
+def extract_dtype(dtype: str) -> dict[str, Any]:
+    """
+    Examples:
+    >>> extract_dtype("varchar( 255 )")
+    {'type': 'varchar', 'max_length': '255'}
+    >>> extract_dtype("numeric(19, 2)")
+    {'type': 'numeric', 'precision': '19', 'scale': '2'}
+    """
+    if m := re.search(
+        r"(?P<type>\w+)"
+        r"(?:\s?\(\s?(?P<max_length>\d+)(?:,\s?(?P<scale>\d+))?\s?\))?",
+        dtype.strip(),
+    ):
+        extract = m.groupdict()
+        if (t := extract["type"]) in ("numeric", "decimal"):
+            extract["precision"] = extract.pop("max_length")
+            extract["scale"] = extract.pop("scale", None) or -1
+            return extract
+
+        extract.pop("scale")
+        if t in ("timestamp", "time"):
+            extract["precision"] = extract.pop("max_length")
+            return extract
+        return extract
+    return {"type": dtype}
