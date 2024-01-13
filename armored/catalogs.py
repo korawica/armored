@@ -2,7 +2,6 @@ import re
 from typing import (
     Annotated,
     Any,
-    Literal,
     Optional,
     Union,
 )
@@ -14,6 +13,8 @@ from pydantic import (
 )
 
 from .base import BaseUpdatableModel
+from .constraints import Reference
+from .dtypes import DataTypes
 from .settings import ColumnSetting
 from .utils import (
     catch_str,
@@ -22,62 +23,9 @@ from .utils import (
 )
 
 
-class BaseType(BaseUpdatableModel):
-    """Base Type"""
-
-    type: Annotated[str, Field(description="Type of implemented data")]
-
-
-class IntType(BaseUpdatableModel):
-    """Integer Type"""
-
-    type: Literal["int", "integer"]
-
-    @field_validator("type", mode="after")
-    def prepare_type(cls, _: Literal["int", "integer"]) -> Literal["integer"]:
-        return "integer"
-
-
-class VarcharType(BaseType):
-    """Variable Character Type"""
-
-    type: Literal["varchar"]
-    max_length: Optional[int] = Field(default=None, le=8000, ge=-1)
-
-
-class NVarcharType(VarcharType):
-    """N Variable Character Type"""
-
-    type: Literal["nvarchar"]
-
-
-class NumericType(BaseType):
-    """Numeric Type"""
-
-    type: Literal["numeric"]
-    precision: Optional[int] = Field(default=None, description="")
-    scale: Optional[int] = Field(default=None)
-
-
-class TimestampType(BaseType):
-    """Time Type"""
-
-    type: Literal["timestamp"]
-    precision: Optional[int] = Field(default=None)
-    timezone: bool = Field(default=False, description="Time zone flag")
-
-
-DTypes = Union[
-    VarcharType,
-    NVarcharType,
-    NumericType,
-    TimestampType,
-    IntType,
-    BaseType,
-]
-
-
 class BaseColumn(BaseUpdatableModel):
+    """Base Column Model"""
+
     name: Annotated[
         str,
         Field(
@@ -85,49 +33,63 @@ class BaseColumn(BaseUpdatableModel):
             alias="ColumnName",
         ),
     ]
-    dtype: DTypes = Field(union_mode="smart")
-
-
-class Column(BaseUpdatableModel):
-    """Column model"""
-
-    name: Annotated[
-        str,
-        Field(
-            description="Name of Column that match in database",
-            alias="ColumnName",
-        ),
-    ]
     dtype: Annotated[
-        Union[dict, str],
+        DataTypes,
         Field(
-            description="Data type of value of this column",
+            union_mode="smart",
+            description="Data Type of Column",
             alias="DataType",
         ),
     ]
 
-    # Default value
+    @field_validator("name")
+    def prepare_name(cls, value: str) -> str:
+        """Prepare string value of name"""
+        return "".join(value.strip().split())
+
+    @field_validator("dtype", mode="before")
+    def prepare_str2dtype(cls, value: Union[str, dict, DataTypes]):
+        """Prepare string value of dtype"""
+        if isinstance(value, str):
+            return {"type": value}
+        return value
+
+
+def prepare_dtype_from_str(values: Any):
+    ...
+
+
+class Column(BaseColumn):
+    """Column model"""
+
     nullable: Annotated[
         bool,
-        Field(description="Nullable flag", alias="Nullable"),
+        Field(
+            description="Nullable flag",
+            alias="Nullable",
+        ),
     ] = True
     unique: Annotated[
         bool,
         Field(
-            description="Unique key flag which can contain null value",
+            description="Unique flag",
             alias="Unique",
         ),
     ] = False
-    default: Optional[Union[int, str]] = Field(
-        default=None,
-        description="Default value of this column",
-        alias="Default",
-    )
-    check: Optional[str] = Field(
-        default=None,
-        description="Check statement before insert to database",
-        alias="Check",
-    )
+    default: Annotated[
+        Union[int, str, None],
+        Field(
+            description="Default value for this column",
+            alias="Default",
+        ),
+    ] = None
+    check: Annotated[
+        Optional[str],
+        Field(
+            description="Check Statement",
+            alias="Check",
+        ),
+    ] = None
 
     # Special value that effect to parent model that include this model
     pk: Annotated[
@@ -138,7 +100,7 @@ class Column(BaseUpdatableModel):
         ),
     ] = False
     fk: Annotated[
-        dict,
+        Union[Reference, dict],
         Field(
             default_factory=dict,
             description="Foreign key reference",
@@ -147,7 +109,7 @@ class Column(BaseUpdatableModel):
     ]
 
     @model_validator(mode="before")
-    def prepare_datatype_from_string(cls, values):
+    def prepare_dtype(cls, values):
         """Prepare datatype value that parsing to this model with different
         types, string or dict type.
 
@@ -160,58 +122,48 @@ class Column(BaseUpdatableModel):
         - serial not null primary key
         """
         if not (
-            datatype_key := only_one(
-                values, ColumnSetting.datatype, default=False
-            )
+            dtype_key := only_one(values, ColumnSetting.dtype, default=False)
         ):
-            raise ValueError("datatype does not contain in values")
+            raise ValueError("dtype key does not contain in values")
 
-        pre_datatype = values.pop(datatype_key)
-        if not isinstance(pre_datatype, str):
-            raise TypeError(
-                f"datatype value does not support for this type, "
-                f"{type(pre_datatype)}"
-            )
+        pre_dtype: Any = values.pop(dtype_key)
+        values_update: dict[str, Any] = {}
+        if isinstance(pre_dtype, str):
+            _dtype, _nullable = split_dtype(pre_dtype)
+            values_update = {"nullable": False}
 
-        _datatype, _nullable = split_dtype(pre_datatype)
-        values_update: dict[str, Any] = {"nullable": False}
+            # Remove unique value from datatype
+            _dtype, values_update["unique"] = catch_str(_dtype, key="unique")
 
-        # Remove unique value from datatype
-        _datatype, values_update["unique"] = catch_str(_datatype, key="unique")
+            # Remove primary key value from datatype
+            _dtype, values_update["pk"] = catch_str(_dtype, key="primary key")
 
-        # Remove primary key value from datatype
-        _datatype, values_update["pk"] = catch_str(_datatype, key="primary key")
+            # Rename serial value to int from datatype
+            _dtype, _ = catch_str(_dtype, key="serial", replace="int")
 
-        # Rename serial value to int from datatype
-        _datatype, _ = catch_str(_datatype, key="serial", replace="int")
-
-        # Check for check value
-        if "check" in _datatype:
-            if m := re.search(
-                r"check\s?\((?P<check>[^()]*(?:\(.*\))*[^()]*)\)",
-                _datatype,
-            ):
-                _datatype, values_update["check"] = catch_str(
-                    _datatype, m.group(), flag=False
-                )
+            # Check for check value
+            if "check" in _dtype:
+                if m := re.search(
+                    r"check\s?\((?P<check>[^()]*(?:\(.*\))*[^()]*)\)",
+                    _dtype,
+                ):
+                    _datatype, values_update["check"] = catch_str(
+                        _dtype, m.group(), flag=False
+                    )
+                else:
+                    raise ValueError(
+                        "datatype with type string does not support for "
+                        "this format of check"
+                    )
+            if re.search("default", _dtype):
+                values["dtype"] = _dtype.split("default")[0].strip()
             else:
-                raise ValueError(
-                    "datatype with type string does not support for "
-                    "this format of check"
-                )
-
-        if re.search("default", _datatype):
-            values["datatype"] = _datatype.split("default")[0].strip()
+                values["dtype"] = _dtype
+                values_update["nullable"] = not re.search("not null", _nullable)
         else:
-            values["datatype"] = _datatype
-            values_update["nullable"] = not re.search("not null", _nullable)
+            values["dtype"] = pre_dtype
 
         return values_update | values
-
-    @field_validator("name")
-    def prepare_name(cls, value) -> str:
-        """Prepare name"""
-        return "".join(value.strip().split())
 
     @model_validator(mode="after")
     def validate_and_check_logic_values(self):

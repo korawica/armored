@@ -1,11 +1,17 @@
 import unittest
 
 import armored.catalogs as catalogs
+import armored.dtypes as dtypes
 
 
-class TestColumn(unittest.TestCase):
-    def test_varchar_column(self):
-        varchar_col = catalogs.BaseColumn.model_validate(
+class TestBaseColumn(unittest.TestCase):
+    def test_base_column_init(self):
+        t = catalogs.BaseColumn(name="foo", dtype={"type": "base"})
+        self.assertEqual("foo", t.name)
+        self.assertEqual("base", t.dtype.type)
+
+    def test_base_column_model_validate(self):
+        t = catalogs.BaseColumn.model_validate(
             {
                 "name": "foo",
                 "dtype": {
@@ -14,12 +20,63 @@ class TestColumn(unittest.TestCase):
                 },
             }
         )
-        self.assertEqual("foo", varchar_col.name)
-        print(type(varchar_col.dtype))
+        self.assertEqual("foo", t.name)
+        self.assertEqual("varchar", t.dtype.type)
+        self.assertEqual(1000, t.dtype.max_length)
 
-    def test_int_column(self):
-        int_col = catalogs.BaseColumn.model_validate(
-            {"name": "foo", "dtype": {"type": "int"}}
+        t = catalogs.BaseColumn.model_validate(
+            {
+                "name": "foo",
+                "dtype": {"type": "int"},
+            }
         )
-        self.assertEqual("foo", int_col.name)
-        self.assertEqual("integer", int_col.dtype.type)
+        self.assertEqual("foo", t.name)
+        self.assertEqual("integer", t.dtype.type)
+
+
+class TestColumn(unittest.TestCase):
+    def test_column_init(self):
+        t = catalogs.Column(name="foo", dtype=dtypes.BaseType())
+        self.assertDictEqual(
+            {
+                "name": "foo",
+                "dtype": {"type": "base"},
+                "nullable": True,
+                "unique": False,
+                "default": None,
+                "check": None,
+                "pk": False,
+                "fk": {},
+            },
+            t.model_dump(by_alias=False),
+        )
+
+        t = catalogs.Column(name="foo", dtype={"type": "base"})
+        self.assertDictEqual(
+            {
+                "name": "foo",
+                "dtype": {"type": "base"},
+                "nullable": True,
+                "unique": False,
+                "default": None,
+                "check": None,
+                "pk": False,
+                "fk": {},
+            },
+            t.model_dump(by_alias=False),
+        )
+
+        t = catalogs.Column(name="foo", dtype="base")
+        self.assertDictEqual(
+            {
+                "name": "foo",
+                "dtype": {"type": "base"},
+                "nullable": True,
+                "unique": False,
+                "default": None,
+                "check": None,
+                "pk": False,
+                "fk": {},
+            },
+            t.model_dump(by_alias=False),
+        )
