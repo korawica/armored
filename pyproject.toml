@@ -1,6 +1,6 @@
 [project]
 name = "armored"
-description = "Armored that implements Model objects for Data Engineer"
+description = "Armored that implements Model objects for Data Pipeline"
 readme = "README.md"
 license = {file = "LICENSE"}
 maintainers = [{ name = "korawica", email = "korawich.anu@gmail.com" }]
@@ -49,6 +49,10 @@ include = [
 exclude = [
     "examples/",
 ]
+
+[tool.shelf.version]
+version = "./armored/__init__.py"
+changelog = "./CHANGELOG.md"
 
 [tool.pytest.ini_options]
 console_output_style = "count"
