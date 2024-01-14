@@ -105,6 +105,48 @@ class Column(BaseColumn):
         ),
     ]
 
+    @classmethod
+    def extract_column_from_dtype(cls, value: str) -> dict[str, Any]:
+        values: dict[str, Any] = {"nullable": False}
+        _dtype, _nullable = split_dtype(value)
+
+        # Remove unique value from datatype
+        _dtype, values["unique"] = catch_str(_dtype, key="unique")
+
+        # Remove primary key value from datatype
+        _dtype, values["pk"] = catch_str(_dtype, key="primary key")
+
+        # Rename serial value to int from datatype
+        _dtype, serial_flag = catch_str(_dtype, key="serial", replace="integer")
+
+        if "check" in _dtype:
+            if m := re.search(
+                r"check\s?\((?P<check>[^()]*(?:\(.*\))*[^()]*)\)",
+                _dtype,
+            ):
+                _dtype, values["check"] = catch_str(
+                    _dtype, m.group(), flag=False
+                )
+            else:
+                raise ValueError(
+                    "datatype with type string does not support for "
+                    "this format of check"
+                )
+
+        if re.search("default", _dtype):
+            _dtype, _default = _dtype.split("default", maxsplit=1)
+            values["dtype"] = _dtype.strip()
+            values["default"] = _default.strip()
+        else:
+            values["dtype"] = _dtype
+
+            if serial_flag:
+                _nullable: str = "not null"
+                values["default"] = "nextval('tablename_colname_seq')"
+
+        values["nullable"] = not re.search("not null", _nullable)
+        return values
+
     @model_validator(mode="before")
     def prepare_dtype(cls, values):
         """Prepare datatype value that parsing to this model with different
@@ -126,49 +168,19 @@ class Column(BaseColumn):
         pre_dtype: Any = values.pop(dtype_key)
         values_update: dict[str, Any] = {}
         if isinstance(pre_dtype, str):
-            _dtype, _nullable = split_dtype(pre_dtype)
-            values_update = {"nullable": False}
-
-            # Remove unique value from datatype
-            _dtype, values_update["unique"] = catch_str(_dtype, key="unique")
-
-            # Remove primary key value from datatype
-            _dtype, values_update["pk"] = catch_str(_dtype, key="primary key")
-
-            # Rename serial value to int from datatype
-            _dtype, _ = catch_str(_dtype, key="serial", replace="int")
-
-            # Check for check value
-            if "check" in _dtype:
-                if m := re.search(
-                    r"check\s?\((?P<check>[^()]*(?:\(.*\))*[^()]*)\)",
-                    _dtype,
-                ):
-                    _datatype, values_update["check"] = catch_str(
-                        _dtype, m.group(), flag=False
-                    )
-                else:
-                    raise ValueError(
-                        "datatype with type string does not support for "
-                        "this format of check"
-                    )
-            if re.search("default", _dtype):
-                values["dtype"] = _dtype.split("default")[0].strip()
-            else:
-                values["dtype"] = _dtype
-                values_update["nullable"] = not re.search("not null", _nullable)
+            values_update = cls.extract_column_from_dtype(pre_dtype)
         else:
             values["dtype"] = pre_dtype
 
         return values_update | values
 
     @model_validator(mode="after")
-    def validate_and_check_logic_values(self):
+    def validate_logic(self):
         """Validate and check logic of values"""
         pk: bool = self.pk
         nullable: bool = self.nullable
 
         # primary key and nullable does not True together
         if pk and nullable:
-            raise ValueError("pk and nullable can not be True together")
+            raise ValueError("`pk` and `nullable` can not be True together")
         return self

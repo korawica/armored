@@ -27,19 +27,30 @@ def split_dtype(dtype: str) -> tuple[str, str]:
     Examples:
     >>> split_dtype("string null")
     ('string', 'null')
+    >>> split_dtype("numeric(10, 2) Null")
+    ('numeric(10, 2)', 'null')
+    >>> split_dtype("timestamp(6) NULL")
+    ('timestamp(6)', 'null')
     >>> split_dtype("string not null")
     ('string', 'not null')
-    >>> split_dtype("string not null null")
-    ('string', 'null')
+    >>> split_dtype("varchar( 20 ) not null null")
+    ('varchar( 20 )', 'null')
     >>> split_dtype("string null null")
     ('string', 'null')
     """
     _nullable: str = "null"
-    for null_str in ["not null", "null"]:
-        if re.search(null_str.lower(), dtype):
+    for null_str in (
+        "not null",
+        "Not Null",
+        "NOT NULL",
+        "null",
+        "Null",
+        "NULL",
+    ):
+        if re.search(null_str, dtype):
             _nullable = null_str
-            dtype = dtype.lower().replace(null_str, "")
-    return " ".join(dtype.strip().split()).lower(), _nullable
+            dtype = dtype.replace(null_str, "")
+    return " ".join(dtype.strip().split()), _nullable.lower()
 
 
 def only_one(
