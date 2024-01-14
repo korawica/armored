@@ -10,10 +10,11 @@ from pydantic import (
 )
 
 from .base import BaseUpdatableModel
+from .enums.status import Status
 
 
 class Tag(BaseUpdatableModel):
-    """Tag"""
+    """Tag Model"""
 
     author: Annotated[
         Optional[str],
@@ -31,9 +32,9 @@ class Tag(BaseUpdatableModel):
         Optional[date], Field(validate_default=True, alias="TagVersion")
     ] = None
     ts: Annotated[
-        Optional[datetime],
-        Field(validate_default=True, alias="TagTimestamp"),
-    ] = None
+        datetime,
+        Field(default_factory=lambda: datetime.now(), alias="TagTimestamp"),
+    ]
 
     @field_validator("author")
     def set_author(cls, value: Optional[str]):
@@ -44,7 +45,8 @@ class Tag(BaseUpdatableModel):
         """Pre initialize the `version` value that parsing from default"""
         return value if value else date(year=1990, month=1, day=1)
 
-    @field_validator("ts")
-    def set_ts(cls, value: Optional[datetime]):
-        """Pre initialize the `ts` value that parsing from default"""
-        return value or datetime.now()
+
+class BaseTask(BaseUpdatableModel):
+    """Base Task Model"""
+
+    st: Status

@@ -28,7 +28,10 @@ Homepage = "https://github.com/korawica/armored/"
 "Source Code" = "https://github.com/korawica/armored/"
 
 [project.optional-dependencies]
-test = ["pytest==7.4.4", "clishelf==0.1.2"]
+test = [
+    "pytest==7.4.4",
+    "clishelf==0.1.2",
+]
 
 [project.scripts]
 armored = "armored:main"
