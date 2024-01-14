@@ -2,9 +2,10 @@
 
 [![test](https://github.com/korawica/armored/actions/workflows/tests.yml/badge.svg?branch=main)](https://github.com/korawica/armored/actions/workflows/tests.yml)
 
-Armored that implements Model objects for Data Pipeline.
+Armored that implements Model objects for Data Pipeline. The Model objects was
+implemented from the Pydantic's `BaseModel` V2.
 
-## Features
+## Models
 
 ### DataTypes Model
 

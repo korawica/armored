@@ -5,6 +5,9 @@ import armored.dtypes as dtypes
 
 
 class TestBaseColumn(unittest.TestCase):
+    def setUp(self):
+        self.maxDiff = None
+
     def test_base_column_init(self):
         t = catalogs.BaseColumn(name="foo", dtype={"type": "base"})
         self.assertEqual("foo", t.name)
@@ -116,6 +119,17 @@ class TestColumn(unittest.TestCase):
         )
 
     def test_column_extract_column_from_dtype(self):
+        t = catalogs.Column.extract_column_from_dtype("numeric( 10, 2 )")
+        self.assertEqual(
+            t,
+            {
+                "unique": False,
+                "pk": False,
+                "nullable": True,
+                "dtype": "numeric( 10, 2 )",
+            },
+        )
+
         t = catalogs.Column.extract_column_from_dtype(
             "varchar( 100 ) not null default 'Empty' check( <name> <> 'test' )"
         )
@@ -140,5 +154,17 @@ class TestColumn(unittest.TestCase):
                 "nullable": False,
                 "dtype": "integer",
                 "default": "nextval('tablename_colname_seq')",
+            },
+        )
+
+        t = catalogs.Column.extract_column_from_dtype("integer null default 1")
+        self.assertDictEqual(
+            t,
+            {
+                "unique": False,
+                "pk": False,
+                "nullable": True,
+                "dtype": "integer",
+                "default": "1",
             },
         )

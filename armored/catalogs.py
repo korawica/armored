@@ -8,12 +8,15 @@ from typing import (
 
 from pydantic import (
     Field,
+    ValidationInfo,
+)
+from pydantic.functional_validators import (
     field_validator,
     model_validator,
 )
 
 from .base import BaseUpdatableModel
-from .constraints import Reference
+from .constraints import ForeignKey, PrimaryKey, Reference
 from .dtypes import DataTypes
 from .settings import ColumnSetting
 from .utils import (
@@ -94,6 +97,7 @@ class Column(BaseColumn):
         Field(
             description="Primary key flag which can not contain null value",
             alias="PrimaryKey",
+            repr=False,
         ),
     ] = False
     fk: Annotated[
@@ -102,6 +106,7 @@ class Column(BaseColumn):
             default_factory=dict,
             description="Foreign key reference",
             alias="ForeignKey",
+            repr=False,
         ),
     ]
 
@@ -144,7 +149,8 @@ class Column(BaseColumn):
                 _nullable: str = "not null"
                 values["default"] = "nextval('tablename_colname_seq')"
 
-        values["nullable"] = not re.search("not null", _nullable)
+        if not values["pk"]:
+            values["nullable"] = not re.search("not null", _nullable)
         return values
 
     @model_validator(mode="before")
@@ -179,8 +185,49 @@ class Column(BaseColumn):
         """Validate and check logic of values"""
         pk: bool = self.pk
         nullable: bool = self.nullable
+        default: Union[int, str, None] = self.default
 
         # primary key and nullable does not True together
         if pk and nullable:
             raise ValueError("`pk` and `nullable` can not be True together")
+        if (default is not None) and nullable:
+            raise ValueError("`nullable` can not be True if `default` was set")
         return self
+
+
+class BaseTable(BaseUpdatableModel):
+    """Base Table Model"""
+
+    schemas: Annotated[
+        list[Column],
+        Field(default_factory=list),
+    ]
+
+
+class Table(BaseTable):
+    """Table Model"""
+
+    pk: Annotated[
+        PrimaryKey,
+        Field(
+            validate_default=True,
+            description="Primary key of this table",
+        ),
+    ] = PrimaryKey()
+    fk: Annotated[
+        list[ForeignKey],
+        Field(default_factory=list),
+    ]
+
+    @field_validator("pk")
+    def prepare_pk_from_schemas(
+        cls,
+        value: PrimaryKey,
+        info: ValidationInfo,
+    ) -> PrimaryKey:
+        schemas: list[str] = [
+            i.name for i in filter(lambda x: x.pk, info.data["schemas"])
+        ]
+        if schemas and not value.columns:
+            value = PrimaryKey(columns=list(schemas))
+        return value

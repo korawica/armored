@@ -13,12 +13,19 @@ class BaseType(BaseModel):
 
     type: str = "base"
 
+    def __str__(self) -> str:
+        return self.type
+
 
 class StringType(BaseType):
     """String Type"""
 
     type: Literal["string", "str"] = "string"
     max_length: Annotated[int, Field(ge=-1)] = -1
+
+    def __str__(self) -> str:
+        _length: str = f"( {self.max_length} )" if self.max_length > -1 else ""
+        return f"{self.type}{_length}"
 
 
 class CharType(StringType):
@@ -97,6 +104,10 @@ class NumericType(BaseType):
     precision: Annotated[int, Field(ge=-1)] = -1
     scale: Annotated[int, Field(ge=-1)] = -1
 
+    def __str__(self) -> str:
+        _scale: str = f", {self.scale}" if self.scale > -1 else ""
+        return f"{self.type}( {self.precision}{_scale} )"
+
 
 class DecimalType(NumericType):
     """Decimal Type"""
@@ -137,6 +148,12 @@ class DateType(BaseType):
 
 class DateTimeType(BaseType):
     ...
+
+
+class SerialType(BaseType):
+    """Serial Type"""
+
+    type: Literal["serial"]
 
 
 DataTypes = Union[
