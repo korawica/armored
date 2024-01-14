@@ -1,6 +1,8 @@
 # Armored
 
 [![test](https://github.com/korawica/armored/actions/workflows/tests.yml/badge.svg?branch=main)](https://github.com/korawica/armored/actions/workflows/tests.yml)
+[![PyPI - Python Version](https://img.shields.io/pypi/pyversions/armored?logo=pypi)](https://pypi.org/project/armored/)
+[![size](https://img.shields.io/github/languages/code-size/korawica/armored)](https://github.com/korawica/armored)
 
 Armored that implements Model objects for Data Pipeline. The Model objects was
 implemented from the Pydantic's `BaseModel` V2.
