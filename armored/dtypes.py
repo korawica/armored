@@ -89,12 +89,10 @@ class BigIntType(BaseType):
     type: Literal["bigint"] = "bigint"
 
 
-class ShortType(BaseType):
-    ...
+class ShortType(BaseType): ...
 
 
-class LongType(BaseType):
-    ...
+class LongType(BaseType): ...
 
 
 class NumericType(BaseType):
@@ -115,16 +113,13 @@ class DecimalType(NumericType):
     type: Literal["decimal"] = "decimal"
 
 
-class FloatType(BaseType):
-    ...
+class FloatType(BaseType): ...
 
 
-class RealType(BaseType):
-    ...
+class RealType(BaseType): ...
 
 
-class DoublePrecisionType(BaseType):
-    ...
+class DoublePrecisionType(BaseType): ...
 
 
 class TimestampType(BaseType):
@@ -138,16 +133,13 @@ class TimestampType(BaseType):
     ] = False
 
 
-class TimeType(BaseType):
-    ...
+class TimeType(BaseType): ...
 
 
-class DateType(BaseType):
-    ...
+class DateType(BaseType): ...
 
 
-class DateTimeType(BaseType):
-    ...
+class DateTimeType(BaseType): ...
 
 
 class SerialType(BaseType):
