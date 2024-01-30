@@ -19,6 +19,7 @@ classifiers = [
 keywords = ['models', 'armored']
 requires-python = ">=3.9.0"
 dependencies = [
+    "tzdata",
     "pydantic==2.6.0",
 ]
 dynamic = ["version"]

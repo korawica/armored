@@ -18,7 +18,13 @@ def catch_str(
     replace: Optional[str] = None,
     flag: bool = True,
 ) -> tuple[str, Optional[Union[bool, str]]]:
-    """Catch keyword from string value and return True if exits"""
+    """Catch keyword from string value and return True if exits
+    Examples:
+        >>> catch_str("varchar( 100 ) unique", "unique")
+        ('varchar( 100 )', True)
+        >>> catch_str("integer primary keys", "primary key")
+        ('integer s', True)
+    """
     if key in value:
         return (
             " ".join(value.replace(key, (replace or "")).split()),

@@ -5,3 +5,7 @@
 # ------------------------------------------------------------------------------
 class ColumnSetting:
     dtype: tuple[str, ...] = ("dtype", "datatype", "type")
+
+
+class TSSetting:
+    tz: str = "Asia/Bangkok"
