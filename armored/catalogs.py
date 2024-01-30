@@ -12,6 +12,7 @@ from typing import (
 )
 
 from pydantic import (
+    BaseModel,
     Field,
     ValidationInfo,
 )
@@ -191,9 +192,10 @@ class Col(BaseCol):
         nullable: bool = self.nullable
         default: Union[int, str, None] = self.default
 
-        # primary key and nullable does not True together
+        # RULE: primary key and nullable does not True together
         if self.pk and nullable:
-            raise ValueError("`pk` and `nullable` can not be True together")
+            # raise ValueError("`pk` and `nullable` can not be True together")
+            self.nullable = False
         if (default is not None) and nullable:
             raise ValueError("`nullable` can not be True if `default` was set")
         return self
@@ -236,6 +238,8 @@ class Tbl(BaseTbl):
         value: Pk,
         info: ValidationInfo,
     ) -> Pk:
+        # Note: we respect that `info.data` should contain schemas before `pk`
+        #   validation.
         schemas: list[str] = [
             i.name for i in filter(lambda x: x.pk, info.data["schemas"])
         ]
@@ -244,5 +248,17 @@ class Tbl(BaseTbl):
         return value
 
 
-class BaseStm(BaseUpdatableModel):
+class BaseStm(BaseModel):
     stm: Annotated[str, Field(description="Statement Query")]
+
+
+class BaseSchema(BaseModel):
+    name: str
+    objects: list[Union[Tbl]]
+
+
+class Schema(BaseSchema): ...
+
+
+class BaseDb(BaseModel):
+    schemas: list[Schema]

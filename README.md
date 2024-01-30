@@ -52,9 +52,9 @@ assert const.columns == ["foo", "bar"]
 from armored.catalogs import Col, Tbl
 
 col = Col(name="foo", dtype="varchar( 100 )")
-assert "foo", col.name
-assert "varchar", col.dtype.type
-assert 100, col.dtype.max_length
+assert "foo" == col.name
+assert "varchar" == col.dtype.type
+assert 100 == col.dtype.max_length
 
 tbl = Tbl(
     name="foo",
@@ -63,9 +63,33 @@ tbl = Tbl(
         Col(name="foo", dtype="varchar( 10 )"),
     ],
 )
+assert "foo" == tbl.name
+assert "id" == tbl.schemas[0].name
 ```
 
 ## Usecase
+
+If I have some catalog config, it easy to pass this config to model object.
+
+```python
+import yaml
+from armored.catalogs import Schema
+
+config = yaml.safe_load("""
+name: "warehouse"
+objects:
+  - name: "customer_master"
+    schemas:
+      - name: "id"
+        dtype: "integer"
+        pk: true
+      - name: "name"
+        dtype: "varchar( 256 )"
+        nullable: false
+""")
+schema = Schema.model_validate(config)
+assert 1 == len(schema.objects)
+```
 
 ## License
 

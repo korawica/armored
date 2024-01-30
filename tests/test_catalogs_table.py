@@ -82,3 +82,74 @@ class TestTable(unittest.TestCase):
                 "fk": [],
             },
         )
+
+    def test_table_init_with_pk(self):
+        t = catalogs.Tbl(
+            name="foo",
+            schemas=[{"name": "id", "dtype": "integer", "pk": True}],
+        )
+        self.assertDictEqual(
+            t.model_dump(by_alias=False),
+            {
+                "name": "foo",
+                "schemas": [
+                    {
+                        "check": None,
+                        "default": None,
+                        "dtype": {"type": "integer"},
+                        "fk": {},
+                        "name": "id",
+                        "nullable": False,
+                        "pk": True,
+                        "unique": False,
+                    }
+                ],
+                "pk": {"columns": ["id"], "name": "id_pk"},
+                "fk": [],
+            },
+        )
+
+    def test_table_model_validate(self):
+        t = catalogs.Tbl.model_validate(
+            {
+                "name": "foo",
+                "schemas": [
+                    {"name": "id", "dtype": "integer", "pk": True},
+                    {
+                        "name": "name",
+                        "dtype": "varchar( 256 )",
+                        "nullable": False,
+                    },
+                ],
+            },
+        )
+        self.assertDictEqual(
+            t.model_dump(by_alias=False),
+            {
+                "name": "foo",
+                "schemas": [
+                    {
+                        "check": None,
+                        "default": None,
+                        "dtype": {"type": "integer"},
+                        "fk": {},
+                        "name": "id",
+                        "nullable": False,
+                        "pk": True,
+                        "unique": False,
+                    },
+                    {
+                        "check": None,
+                        "default": None,
+                        "dtype": {"type": "varchar", "max_length": 256},
+                        "fk": {},
+                        "name": "name",
+                        "nullable": False,
+                        "pk": False,
+                        "unique": False,
+                    },
+                ],
+                "pk": {"columns": ["id"], "name": "id_pk"},
+                "fk": [],
+            },
+        )
