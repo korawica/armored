@@ -75,3 +75,15 @@ class BaseTask(BaseUpdatableModel):
     """Base Task Model"""
 
     st: Status
+
+
+class BaseMsg(BaseUpdatableModel):
+    level: int
+    msg: str
+
+
+class Msg(BaseMsg): ...
+
+
+class Log(BaseUpdatableModel):
+    msgs: list[Msg]

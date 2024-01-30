@@ -118,10 +118,12 @@ class DecimalType(NumericType):
     type: Literal["decimal"] = "decimal"
 
 
-class FloatType(BaseType): ...
+class FloatType(BaseType):
+    type: Literal["float"] = "float"
 
 
-class RealType(BaseType): ...
+class RealType(BaseType):
+    type: Literal["real"] = "real"
 
 
 class DoublePrecisionType(BaseType): ...

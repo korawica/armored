@@ -188,12 +188,11 @@ class Col(BaseCol):
     @model_validator(mode="after")
     def validate_logic(self):
         """Validate and check logic of values"""
-        pk: bool = self.pk
         nullable: bool = self.nullable
         default: Union[int, str, None] = self.default
 
         # primary key and nullable does not True together
-        if pk and nullable:
+        if self.pk and nullable:
             raise ValueError("`pk` and `nullable` can not be True together")
         if (default is not None) and nullable:
             raise ValueError("`nullable` can not be True if `default` was set")
@@ -205,7 +204,10 @@ class BaseTbl(BaseUpdatableModel):
 
     schemas: Annotated[
         list[Col],
-        Field(default_factory=list),
+        Field(
+            default_factory=list,
+            description="Schema of this Table",
+        ),
     ]
 
 
@@ -221,7 +223,10 @@ class Tbl(BaseTbl):
     ] = PK()
     fk: Annotated[
         list[FK],
-        Field(default_factory=list),
+        Field(
+            default_factory=list,
+            description="Foreign key of this table",
+        ),
     ]
 
     @field_validator("pk")
@@ -236,3 +241,7 @@ class Tbl(BaseTbl):
         if schemas and not value.columns:
             value = PK(columns=list(schemas))
         return value
+
+
+class BaseStm(BaseUpdatableModel):
+    stm: Annotated[str, Field(description="Statement Query")]
