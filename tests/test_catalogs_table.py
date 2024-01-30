@@ -31,7 +31,7 @@ class TestTable(unittest.TestCase):
             t.schemas,
             [catalogs.Col(name="foo", dtype="varchar( 10 )")],
         )
-        self.assertEqual(t.pk, catalogs.PK())
+        self.assertEqual(t.pk, catalogs.Pk())
         self.assertListEqual(t.fk, [])
 
         t = catalogs.Tbl(

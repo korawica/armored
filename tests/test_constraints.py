@@ -5,20 +5,20 @@ import armored.constraints as const
 
 class TestPrimaryKey(unittest.TestCase):
     def test_pk_init(self):
-        t = const.PK(name="foo")
+        t = const.Pk(name="foo")
         self.assertEqual("foo", t.name)
         self.assertListEqual([], t.columns)
 
-        t = const.PK(name="foo", columns=["col1"])
+        t = const.Pk(name="foo", columns=["col1"])
         self.assertEqual("foo", t.name)
         self.assertListEqual(["col1"], t.columns)
 
-        t = const.PK(columns=["col1", "col2"])
+        t = const.Pk(columns=["col1", "col2"])
         self.assertEqual("col1_col2_pk", t.name)
         self.assertListEqual(["col1", "col2"], t.columns)
 
     def test_pk_model_validate(self):
-        t = const.PK.model_validate(
+        t = const.Pk.model_validate(
             {
                 "name": "foo",
                 "columns": ["col1"],
@@ -37,7 +37,7 @@ class TestReference(unittest.TestCase):
 
 class TestForeignKey(unittest.TestCase):
     def test_fk_init(self):
-        t = const.FK(
+        t = const.Fk(
             name="foo",
             to="test",
             ref=const.Ref(table="bar", column="baz"),
@@ -48,7 +48,7 @@ class TestForeignKey(unittest.TestCase):
         self.assertEqual("baz", t.ref.column)
 
     def test_fk_model_validate(self):
-        t = const.FK.model_validate(
+        t = const.Fk.model_validate(
             {
                 "name": "foo",
                 "to": "test",

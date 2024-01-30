@@ -19,7 +19,7 @@ class Const(BaseModel):
     ] = None
 
 
-class PK(Const):
+class Pk(Const):
     """Primary Key Model"""
 
     name: Annotated[
@@ -42,7 +42,7 @@ class Ref(BaseModel):
     column: str
 
 
-class FK(Const):
+class Fk(Const):
     """Foreign Key Model
     Examples
     *   {

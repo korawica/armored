@@ -21,7 +21,7 @@ from pydantic.functional_validators import (
 )
 
 from .__base import BaseUpdatableModel
-from .constraints import FK, PK, Ref
+from .constraints import Fk, Pk, Ref
 from .dtypes import DataTypes
 from .settings import ColumnSetting
 from .utils import (
@@ -216,14 +216,14 @@ class Tbl(BaseTbl):
     """Table Model"""
 
     pk: Annotated[
-        PK,
+        Pk,
         Field(
             validate_default=True,
             description="Primary key of this table",
         ),
-    ] = PK()
+    ] = Pk()
     fk: Annotated[
-        list[FK],
+        list[Fk],
         Field(
             default_factory=list,
             description="Foreign key of this table",
@@ -233,14 +233,14 @@ class Tbl(BaseTbl):
     @field_validator("pk")
     def prepare_pk_from_schemas(
         cls,
-        value: PK,
+        value: Pk,
         info: ValidationInfo,
-    ) -> PK:
+    ) -> Pk:
         schemas: list[str] = [
             i.name for i in filter(lambda x: x.pk, info.data["schemas"])
         ]
         if schemas and not value.columns:
-            value = PK(columns=list(schemas))
+            value = Pk(columns=list(schemas))
         return value
 
 

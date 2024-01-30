@@ -39,9 +39,9 @@ assert dtype.max_length == -1
 ### Constraints
 
 ```python
-from armored.constraints import PK
+from armored.constraints import Pk
 
-const = PK(columns=["foo", "bar"])
+const = Pk(columns=["foo", "bar"])
 assert const.name == "foo_bar_pk"
 assert const.columns == ["foo", "bar"]
 ```
