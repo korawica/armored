@@ -1,15 +1,32 @@
-# Armored
+# Utility Package: *Armored*
 
 [![test](https://github.com/korawica/armored/actions/workflows/tests.yml/badge.svg?branch=main)](https://github.com/korawica/armored/actions/workflows/tests.yml)
 [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/armored?logo=pypi)](https://pypi.org/project/armored/)
 [![size](https://img.shields.io/github/languages/code-size/korawica/armored)](https://github.com/korawica/armored)
 
-Armored that implements Model objects for Data Pipeline. The Model objects was
-implemented from the Pydantic's `BaseModel` V2.
+**Table of Contents**:
+
+- [Installation](#installation)
+- [Models](#models)
+  - [Data Types](#data-types)
+  - [Constraints](#constraints)
+- [Usecase](#usecase)
+
+This models package, **Armored**, implements any model objects for **Data Pipeline**
+or **Data Platform**. The Model objects was implemented from the [Pydantic V2](https://docs.pydantic.dev/latest/).
+
+The model able to handle common validation logic and able to adjust by custom code
+for your specific requirements (Yeah, it just Sub-class of `BaseModel`).
+
+## Installation
+
+```shell
+pip install -U armored
+```
 
 ## Models
 
-### DataTypes Model
+### Data Types
 
 ```python
 from armored.dtypes import StringType
@@ -19,7 +36,7 @@ assert dtype.type == "string"
 assert dtype.max_length == -1
 ```
 
-### Constraints Model
+### Constraints
 
 ```python
 from armored.constraints import PrimaryKey
@@ -39,6 +56,8 @@ assert "foo", col.name
 assert "varchar", col.dtype.type
 assert 100, col.dtype.max_length
 ```
+
+## Usecase
 
 ## License
 
