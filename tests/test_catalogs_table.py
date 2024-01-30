@@ -8,12 +8,12 @@ class TestBaseTable(unittest.TestCase):
         self.maxDiff = None
 
     def test_base_table_init(self):
-        t = catalogs.BaseTable(
-            schemas=[catalogs.Column(name="foo", dtype="varchar( 10 )")]
+        t = catalogs.BaseTbl(
+            schemas=[catalogs.Col(name="foo", dtype="varchar( 10 )")]
         )
         self.assertListEqual(
             t.schemas,
-            [catalogs.Column(name="foo", dtype="varchar( 10 )")],
+            [catalogs.Col(name="foo", dtype="varchar( 10 )")],
         )
 
 
@@ -22,17 +22,17 @@ class TestTable(unittest.TestCase):
         self.maxDiff = None
 
     def test_table_init(self):
-        t = catalogs.Table(
-            schemas=[catalogs.Column(name="foo", dtype="varchar( 10 )")]
+        t = catalogs.Tbl(
+            schemas=[catalogs.Col(name="foo", dtype="varchar( 10 )")]
         )
         self.assertListEqual(
             t.schemas,
-            [catalogs.Column(name="foo", dtype="varchar( 10 )")],
+            [catalogs.Col(name="foo", dtype="varchar( 10 )")],
         )
         self.assertEqual(t.pk, catalogs.PrimaryKey())
         self.assertListEqual(t.fk, [])
 
-        t = catalogs.Table(schemas=[{"name": "foo", "dtype": "varchar( 100 )"}])
+        t = catalogs.Tbl(schemas=[{"name": "foo", "dtype": "varchar( 100 )"}])
         self.assertDictEqual(
             t.model_dump(by_alias=False),
             {
@@ -53,7 +53,7 @@ class TestTable(unittest.TestCase):
             },
         )
 
-        t = catalogs.Table(
+        t = catalogs.Tbl(
             schemas=[{"name": "foo", "dtype": "varchar( 100 ) primary key"}]
         )
         self.assertDictEqual(

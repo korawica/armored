@@ -34,7 +34,7 @@ from .utils import (
 )
 
 
-class BaseColumn(BaseUpdatableModel):
+class BaseCol(BaseUpdatableModel):
     """Base Column Model"""
 
     name: Annotated[
@@ -66,7 +66,7 @@ class BaseColumn(BaseUpdatableModel):
         return value
 
 
-class Column(BaseColumn):
+class Col(BaseCol):
     """Column model"""
 
     nullable: Annotated[
@@ -202,16 +202,16 @@ class Column(BaseColumn):
         return self
 
 
-class BaseTable(BaseUpdatableModel):
+class BaseTbl(BaseUpdatableModel):
     """Base Table Model"""
 
     schemas: Annotated[
-        list[Column],
+        list[Col],
         Field(default_factory=list),
     ]
 
 
-class Table(BaseTable):
+class Tbl(BaseTbl):
     """Table Model"""
 
     pk: Annotated[

@@ -46,12 +46,12 @@ assert const.name == "foo_bar_pk"
 assert const.columns == ["foo", "bar"]
 ```
 
-### Catalogs Model
+### Catalogs
 
 ```python
-from armored.catalogs import Column
+from armored.catalogs import Col
 
-col = Column(name="foo", dtype="varchar( 100 )")
+col = Col(name="foo", dtype="varchar( 100 )")
 assert "foo", col.name
 assert "varchar", col.dtype.type
 assert 100, col.dtype.max_length

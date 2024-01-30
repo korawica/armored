@@ -9,16 +9,16 @@ class TestBaseColumn(unittest.TestCase):
         self.maxDiff = None
 
     def test_base_column_init(self):
-        t = catalogs.BaseColumn(name="foo", dtype={"type": "base"})
+        t = catalogs.BaseCol(name="foo", dtype={"type": "base"})
         self.assertEqual("foo", t.name)
         self.assertEqual("base", t.dtype.type)
 
-        t = catalogs.BaseColumn(name="foo", dtype="varchar( 100 )")
+        t = catalogs.BaseCol(name="foo", dtype="varchar( 100 )")
         self.assertEqual("foo", t.name)
         self.assertEqual("varchar", t.dtype.type)
         self.assertEqual(100, t.dtype.max_length)
 
-        t = catalogs.BaseColumn(
+        t = catalogs.BaseCol(
             name="foo", dtype={"type": "varchar", "max_length": 100}
         )
         self.assertEqual("foo", t.name)
@@ -26,7 +26,7 @@ class TestBaseColumn(unittest.TestCase):
         self.assertEqual(100, t.dtype.max_length)
 
     def test_base_column_model_validate(self):
-        t = catalogs.BaseColumn.model_validate(
+        t = catalogs.BaseCol.model_validate(
             {
                 "name": "foo",
                 "dtype": {
@@ -39,7 +39,7 @@ class TestBaseColumn(unittest.TestCase):
         self.assertEqual("varchar", t.dtype.type)
         self.assertEqual(1000, t.dtype.max_length)
 
-        t = catalogs.BaseColumn.model_validate(
+        t = catalogs.BaseCol.model_validate(
             {
                 "name": "foo",
                 "dtype": {"type": "int"},
@@ -54,7 +54,7 @@ class TestColumn(unittest.TestCase):
         self.maxDiff = None
 
     def test_column_init(self):
-        t = catalogs.Column(name="foo", dtype=dtypes.BaseType())
+        t = catalogs.Col(name="foo", dtype=dtypes.BaseType())
         self.assertDictEqual(
             {
                 "name": "foo",
@@ -69,7 +69,7 @@ class TestColumn(unittest.TestCase):
             t.model_dump(by_alias=False),
         )
 
-        t = catalogs.Column(name="foo", dtype={"type": "base"})
+        t = catalogs.Col(name="foo", dtype={"type": "base"})
         self.assertDictEqual(
             {
                 "name": "foo",
@@ -84,7 +84,7 @@ class TestColumn(unittest.TestCase):
             t.model_dump(by_alias=False),
         )
 
-        t = catalogs.Column(name="foo", dtype="base")
+        t = catalogs.Col(name="foo", dtype="base")
         self.assertDictEqual(
             {
                 "name": "foo",
@@ -99,7 +99,7 @@ class TestColumn(unittest.TestCase):
             t.model_dump(by_alias=False),
         )
 
-        t = catalogs.Column(
+        t = catalogs.Col(
             name="foo",
             dtype="varchar( 20 )",
             fk={"table": "bar", "column": "baz"},
@@ -119,7 +119,7 @@ class TestColumn(unittest.TestCase):
         )
 
     def test_column_extract_column_from_dtype(self):
-        t = catalogs.Column.extract_column_from_dtype("numeric( 10, 2 )")
+        t = catalogs.Col.extract_column_from_dtype("numeric( 10, 2 )")
         self.assertEqual(
             t,
             {
@@ -130,7 +130,7 @@ class TestColumn(unittest.TestCase):
             },
         )
 
-        t = catalogs.Column.extract_column_from_dtype(
+        t = catalogs.Col.extract_column_from_dtype(
             "varchar( 100 ) not null default 'Empty' check( <name> <> 'test' )"
         )
         self.assertDictEqual(
@@ -145,7 +145,7 @@ class TestColumn(unittest.TestCase):
             },
         )
 
-        t = catalogs.Column.extract_column_from_dtype("serial primary key")
+        t = catalogs.Col.extract_column_from_dtype("serial primary key")
         self.assertDictEqual(
             t,
             {
@@ -157,7 +157,7 @@ class TestColumn(unittest.TestCase):
             },
         )
 
-        t = catalogs.Column.extract_column_from_dtype("integer null default 1")
+        t = catalogs.Col.extract_column_from_dtype("integer null default 1")
         self.assertDictEqual(
             t,
             {
