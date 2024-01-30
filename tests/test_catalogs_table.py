@@ -29,7 +29,7 @@ class TestTable(unittest.TestCase):
             t.schemas,
             [catalogs.Col(name="foo", dtype="varchar( 10 )")],
         )
-        self.assertEqual(t.pk, catalogs.PrimaryKey())
+        self.assertEqual(t.pk, catalogs.PK())
         self.assertListEqual(t.fk, [])
 
         t = catalogs.Tbl(schemas=[{"name": "foo", "dtype": "varchar( 100 )"}])

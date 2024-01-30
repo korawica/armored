@@ -14,14 +14,14 @@ from pydantic import BaseModel, Field
 from pydantic.functional_validators import model_validator
 
 
-class Constraint(BaseModel):
+class Const(BaseModel):
     name: Annotated[
         Optional[str],
         Field(description="Name of Constraint"),
     ] = None
 
 
-class PrimaryKey(Constraint):
+class PK(Const):
     """Primary Key Model"""
 
     name: Annotated[
@@ -37,14 +37,14 @@ class PrimaryKey(Constraint):
         return self
 
 
-class Reference(BaseModel):
+class Ref(BaseModel):
     """Reference Model"""
 
     table: str
     column: str
 
 
-class ForeignKey(Constraint):
+class FK(Const):
     """Foreign Key Model
     Examples
     *   {
@@ -69,7 +69,7 @@ class ForeignKey(Constraint):
         Field(description="Name of Foreign Key Constraint"),
     ] = None
     to: str
-    ref: Reference
+    ref: Ref
 
     @model_validator(mode="after")
     def generate_name(self):
