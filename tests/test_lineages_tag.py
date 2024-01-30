@@ -17,8 +17,8 @@ class TestTS(unittest.TestCase):
         self.assertDictEqual(
             t.model_dump(by_alias=False),
             {
-                "ts": datetime.datetime(
-                    2023, 1, 1, 0, 0, 0, tzinfo=ZoneInfo(st.TSSetting.tz)
+                "ts": datetime.datetime(2023, 1, 1, 0, 0, 0).astimezone(
+                    tz=ZoneInfo(st.TSSetting.tz)
                 ),
                 "tz": "Asia/Bangkok",
             },
@@ -40,8 +40,8 @@ class TestTag(unittest.TestCase):
                 "author": "undefined",
                 "desc": None,
                 "labels": [],
-                "ts": datetime.datetime(
-                    2023, 1, 1, 0, 0, 0, tzinfo=ZoneInfo(st.TSSetting.tz)
+                "ts": datetime.datetime(2023, 1, 1, 0, 0, 0).astimezone(
+                    tz=ZoneInfo(st.TSSetting.tz)
                 ),
                 "vs": datetime.date(2023, 1, 1),
                 "tz": "Asia/Bangkok",
