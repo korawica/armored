@@ -1,3 +1,10 @@
+# ------------------------------------------------------------------------------
+# Copyright (c) 2022 Korawich Anuttra. All rights reserved.
+# Licensed under the MIT License. See LICENSE in the project root for
+# license information.
+# ------------------------------------------------------------------------------
+from __future__ import annotations
+
 from datetime import date, datetime
 from typing import (
     Annotated,
@@ -9,7 +16,7 @@ from pydantic import (
     field_validator,
 )
 
-from .base import BaseUpdatableModel
+from .__base import BaseUpdatableModel
 from .enums.status import Status
 
 

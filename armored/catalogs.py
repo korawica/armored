@@ -1,3 +1,10 @@
+# ------------------------------------------------------------------------------
+# Copyright (c) 2022 Korawich Anuttra. All rights reserved.
+# Licensed under the MIT License. See LICENSE in the project root for
+# license information.
+# ------------------------------------------------------------------------------
+from __future__ import annotations
+
 import re
 from typing import (
     Annotated,
@@ -15,7 +22,7 @@ from pydantic.functional_validators import (
     model_validator,
 )
 
-from .base import BaseUpdatableModel
+from .__base import BaseUpdatableModel
 from .constraints import ForeignKey, PrimaryKey, Reference
 from .dtypes import DataTypes
 from .settings import ColumnSetting
