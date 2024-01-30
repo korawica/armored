@@ -23,7 +23,7 @@ jobs:
           python-version: "3.9"
           cache-dependency-path: pyproject.toml
 
-      - uses: actions/cache@v4
+      - uses: actions/cache@v3
         id: cache
         with:
           path: ${{ env.pythonLocation }}
