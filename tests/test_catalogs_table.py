@@ -9,7 +9,8 @@ class TestBaseTable(unittest.TestCase):
 
     def test_base_table_init(self):
         t = catalogs.BaseTbl(
-            schemas=[catalogs.Col(name="foo", dtype="varchar( 10 )")]
+            name="foo",
+            schemas=[catalogs.Col(name="foo", dtype="varchar( 10 )")],
         )
         self.assertListEqual(
             t.schemas,
@@ -23,7 +24,8 @@ class TestTable(unittest.TestCase):
 
     def test_table_init(self):
         t = catalogs.Tbl(
-            schemas=[catalogs.Col(name="foo", dtype="varchar( 10 )")]
+            name="foo",
+            schemas=[catalogs.Col(name="foo", dtype="varchar( 10 )")],
         )
         self.assertListEqual(
             t.schemas,
@@ -32,10 +34,13 @@ class TestTable(unittest.TestCase):
         self.assertEqual(t.pk, catalogs.PK())
         self.assertListEqual(t.fk, [])
 
-        t = catalogs.Tbl(schemas=[{"name": "foo", "dtype": "varchar( 100 )"}])
+        t = catalogs.Tbl(
+            name="foo", schemas=[{"name": "foo", "dtype": "varchar( 100 )"}]
+        )
         self.assertDictEqual(
             t.model_dump(by_alias=False),
             {
+                "name": "foo",
                 "schemas": [
                     {
                         "check": None,
@@ -54,11 +59,13 @@ class TestTable(unittest.TestCase):
         )
 
         t = catalogs.Tbl(
-            schemas=[{"name": "foo", "dtype": "varchar( 100 ) primary key"}]
+            name="foo",
+            schemas=[{"name": "foo", "dtype": "varchar( 100 ) primary key"}],
         )
         self.assertDictEqual(
             t.model_dump(by_alias=False),
             {
+                "name": "foo",
                 "schemas": [
                     {
                         "check": None,

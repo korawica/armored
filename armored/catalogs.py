@@ -202,6 +202,7 @@ class Col(BaseCol):
 class BaseTbl(BaseUpdatableModel):
     """Base Table Model"""
 
+    name: str
     schemas: Annotated[
         list[Col],
         Field(

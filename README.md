@@ -49,12 +49,20 @@ assert const.columns == ["foo", "bar"]
 ### Catalogs
 
 ```python
-from armored.catalogs import Col
+from armored.catalogs import Col, Tbl
 
 col = Col(name="foo", dtype="varchar( 100 )")
 assert "foo", col.name
 assert "varchar", col.dtype.type
 assert 100, col.dtype.max_length
+
+tbl = Tbl(
+    name="foo",
+    schemas=[
+        Col(name="id", dtype="integer primary key"),
+        Col(name="foo", dtype="varchar( 10 )"),
+    ],
+)
 ```
 
 ## Usecase

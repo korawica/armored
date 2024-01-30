@@ -27,12 +27,13 @@ class TS(BaseModel):
 
     ts: Annotated[
         datetime,
-        Field(default_factory=lambda: datetime.now(), alias="Timestamp"),
+        Field(default_factory=lambda: datetime.utcnow(), alias="Timestamp"),
     ]
     tz: Annotated[str, Field(alias="TimeZone")] = TSSetting.tz
 
     @property
     def upts(self) -> datetime:
+        """Return updated timestamp"""
         return datetime.now(tz=self.tz)
 
     @model_validator(mode="after")
