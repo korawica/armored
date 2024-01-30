@@ -19,7 +19,7 @@ classifiers = [
 keywords = ['models', 'armored']
 requires-python = ">=3.9.0"
 dependencies = [
-    "pydantic==2.5.3",
+    "pydantic==2.6.0",
 ]
 dynamic = ["version"]
 
