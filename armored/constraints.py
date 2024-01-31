@@ -9,68 +9,93 @@ from typing import (
 )
 
 from pydantic import BaseModel, Field
-from pydantic.functional_validators import model_validator
 
 
 class Const(BaseModel):
-    name: Annotated[
+    """Constraint Model"""
+
+    of: Annotated[
         Optional[str],
-        Field(description="Name of Constraint"),
+        Field(description="Owner of this Constraint"),
     ] = None
+
+    @property
+    def name(self) -> str:
+        if not self.of:
+            raise ValueError(
+                "This constraint does not pass `of` value for take ownership."
+            )
+        return f"{self.of}_const"
 
 
 class Pk(Const):
-    """Primary Key Model"""
+    """Primary Key Model.
 
-    name: Annotated[
-        Optional[str],
-        Field(description="Name of Primary Key Constraint"),
-    ] = None
-    columns: Annotated[list[str], Field(default_factory=list)]
+    Examples:
+        *   {
+                "of": "foo",
+                "cols": ["bar", "baz"],
+            }
+    """
 
-    @model_validator(mode="after")
-    def generate_name(self):
-        if self.name is None and self.columns:
-            self.name: str = f'{"_".join(self.columns)}_pk'
-        return self
+    cols: Annotated[
+        list[str],
+        Field(default_factory=list, description="List of primary key columns"),
+    ]
+
+    @property
+    def name(self) -> str:
+        if not self.of:
+            raise ValueError(
+                "This constraint does not pass `of` value for take ownership."
+            )
+        if self.cols:
+            return f'{self.of}_{"_".join(self.cols)}_pk'
+        raise ValueError("This primary key does not have any columns.")
 
 
 class Ref(BaseModel):
-    """Reference Model"""
+    """Reference Model
 
-    table: str
-    column: str
+    Examples:
+        *   {
+                "tbl": "foo",
+                "col": "bar",
+            }
+    """
+
+    tbl: str
+    col: str
 
 
 class Fk(Const):
-    """Foreign Key Model
-    Examples
-    *   {
-            "name": "foo_bar_ref_table_ref_column_fk",
-            "to": "bar",
-            "ref": {
-                "table": "ref_table",
-                "column": "ref_column"
+    """Foreign Key Model.
+
+    Examples:
+        *   {
+                "of": "foo",
+                "to": "bar",
+                "ref": {
+                    "table": "ref_table",
+                    "column": "ref_column"
+                }
             }
-        }
-    *   {
-            "to": "bar",
-            "ref": {
-                "table": "ref_table",
-                "column": "ref_column"
+        *   {
+                "to": "bar",
+                "ref": {
+                    "table": "ref_table",
+                    "column": "ref_column"
+                }
             }
-        }
     """
 
-    name: Annotated[
-        Optional[str],
-        Field(description="Name of Foreign Key Constraint"),
-    ] = None
     to: str
     ref: Ref
 
-    @model_validator(mode="after")
-    def generate_name(self):
-        if self.name is None:
-            self.name: str = f"{self.to}_{self.ref.table}_{self.ref.column}_fk"
-        return self
+    @property
+    def name(self) -> str:
+        if not self.of:
+            raise ValueError(
+                "This constraint does not pass `of` value for take ownership."
+            )
+        return f"{self.of}_{self.to}_{self.ref.tbl}_{self.ref.col}_fk"

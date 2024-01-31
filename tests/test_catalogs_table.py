@@ -31,7 +31,7 @@ class TestTable(unittest.TestCase):
             t.schemas,
             [catalogs.Col(name="foo", dtype="varchar( 10 )")],
         )
-        self.assertEqual(t.pk, catalogs.Pk())
+        self.assertEqual(t.pk, catalogs.Pk(of="foo"))
         self.assertListEqual(t.fk, [])
 
         t = catalogs.Tbl(
@@ -53,7 +53,7 @@ class TestTable(unittest.TestCase):
                         "unique": False,
                     }
                 ],
-                "pk": {"columns": [], "name": None},
+                "pk": {"cols": [], "of": "foo"},
                 "fk": [],
             },
         )
@@ -78,7 +78,7 @@ class TestTable(unittest.TestCase):
                         "unique": False,
                     }
                 ],
-                "pk": {"columns": ["foo"], "name": "foo_pk"},
+                "pk": {"cols": ["foo"], "of": "foo"},
                 "fk": [],
             },
         )
@@ -104,7 +104,7 @@ class TestTable(unittest.TestCase):
                         "unique": False,
                     }
                 ],
-                "pk": {"columns": ["id"], "name": "id_pk"},
+                "pk": {"cols": ["id"], "of": "foo"},
                 "fk": [],
             },
         )
@@ -149,7 +149,7 @@ class TestTable(unittest.TestCase):
                         "unique": False,
                     },
                 ],
-                "pk": {"columns": ["id"], "name": "id_pk"},
+                "pk": {"cols": ["id"], "of": "foo"},
                 "fk": [],
             },
         )

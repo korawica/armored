@@ -12,15 +12,17 @@ AbstractSetOrDict = Union[
 ]
 
 
-class BaseUpdatableModel(BaseModel):
-    """Base Model that was implemented updatable method and properties."""
-
+class __BaseModel(BaseModel):
     # This config allow to validate before assign new data to any field
     model_config = ConfigDict(
         validate_assignment=True,
         use_enum_values=True,
         populate_by_name=True,
     )
+
+
+class BaseUpdatableModel(__BaseModel):
+    """Base Model that was implemented updatable method and properties."""
 
     @classmethod
     def get_field_names(cls, alias=False):

@@ -10,13 +10,16 @@
 - [Models](#models)
   - [Data Types](#data-types)
   - [Constraints](#constraints)
+  - [Catalogs](#catalogs)
+  - [Lineages](#lineages)
+- [Enums](#enums)
 - [Usecase](#usecase)
 
 This models package, **Armored**, implements any model objects for **Data Pipeline**
 or **Data Platform**. The Model objects was implemented from the [Pydantic V2](https://docs.pydantic.dev/latest/).
 
-The model able to handle common validation logic and able to adjust by custom code
-for your specific requirements (Yeah, it just Sub-class of `BaseModel`).
+The model able to handle common logic validations and able to adjust by custom code
+for your specific requirements (Yeah, it just inherits Sub-Class from `BaseModel`).
 
 ## Installation
 
@@ -41,9 +44,9 @@ assert dtype.max_length == -1
 ```python
 from armored.constraints import Pk
 
-const = Pk(columns=["foo", "bar"])
-assert const.name == "foo_bar_pk"
-assert const.columns == ["foo", "bar"]
+const = Pk(of="foo", cols=["bar", "baz"])
+assert const.name == "foo_bar_baz_pk"
+assert const.cols == ["bar", "baz"]
 ```
 
 ### Catalogs
@@ -66,6 +69,10 @@ tbl = Tbl(
 assert "foo" == tbl.name
 assert "id" == tbl.schemas[0].name
 ```
+
+### Lineages
+
+## Enums
 
 ## Usecase
 

@@ -219,17 +219,11 @@ class Tbl(BaseTbl):
 
     pk: Annotated[
         Pk,
-        Field(
-            validate_default=True,
-            description="Primary key of this table",
-        ),
+        Field(validate_default=True, description="Primary Key"),
     ] = Pk()
     fk: Annotated[
         list[Fk],
-        Field(
-            default_factory=list,
-            description="Foreign key of this table",
-        ),
+        Field(default_factory=list, description="Foreign Key"),
     ]
 
     @field_validator("pk")
@@ -240,11 +234,22 @@ class Tbl(BaseTbl):
     ) -> Pk:
         # Note: we respect that `info.data` should contain schemas before `pk`
         #   validation.
-        schemas: list[str] = [
+        pks: list[str] = [
             i.name for i in filter(lambda x: x.pk, info.data["schemas"])
         ]
-        if schemas and not value.columns:
-            value = Pk(columns=list(schemas))
+        if pks and not value.cols:
+            # Note: pass primary key cols if `pk` does not set.
+            value = Pk(cols=list(pks))
+
+        # Note: change name of `pk` with parent Tbl class name
+        value.of = info.data["name"]
+        return value
+
+    @field_validator("fk")
+    def prepare_fk(cls, value: list[Fk], info: ValidationInfo) -> list[Fk]:
+        # Note: change name of `fk` with parent Tbl class name
+        for fk in value:
+            fk.of = info.data["name"]
         return value
 
 
