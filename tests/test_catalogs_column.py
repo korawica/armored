@@ -1,7 +1,7 @@
 import unittest
 
 import armored.catalogs as catalogs
-import armored.dtypes as dtypes
+import armored.dtype as dtype
 
 
 class TestBaseColumn(unittest.TestCase):
@@ -54,7 +54,7 @@ class TestColumn(unittest.TestCase):
         self.maxDiff = None
 
     def test_column_init(self):
-        t = catalogs.Col(name="foo", dtype=dtypes.BaseType())
+        t = catalogs.Col(name="foo", dtype=dtype.BaseType())
         self.assertDictEqual(
             {
                 "name": "foo",

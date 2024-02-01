@@ -155,7 +155,7 @@ class SerialType(BaseType):
     type: Literal["serial"]
 
 
-DataTypes = Union[
+Dtype = Union[
     StringType,
     CharType,
     VarcharType,

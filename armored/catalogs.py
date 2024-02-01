@@ -22,8 +22,8 @@ from pydantic.functional_validators import (
 )
 
 from .__base import BaseUpdatableModel
-from .constraints import Fk, Pk, Ref
-from .dtypes import DataTypes
+from .const import Fk, Pk, Ref
+from .dtype import Dtype
 from .settings import ColumnSetting
 from .utils import (
     catch_str,
@@ -44,7 +44,7 @@ class BaseCol(BaseUpdatableModel):
         ),
     ]
     dtype: Annotated[
-        DataTypes,
+        Dtype,
         Field(
             union_mode="left_to_right",
             description="Data Type of Column",
@@ -58,7 +58,7 @@ class BaseCol(BaseUpdatableModel):
         return "".join(value.strip().split())
 
     @field_validator("dtype", mode="before")
-    def prepare_str2dtype(cls, value: Union[str, dict, DataTypes]):
+    def prepare_str2dtype(cls, value: Union[str, dict, Dtype]):
         """Prepare string value of dtype"""
         if isinstance(value, str):
             return extract_dtype(value)

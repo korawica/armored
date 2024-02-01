@@ -1,6 +1,6 @@
 import unittest
 
-import armored.constraints as const
+import armored.const as const
 
 
 class TestPrimaryKey(unittest.TestCase):
