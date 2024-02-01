@@ -1,8 +1,14 @@
 import unittest
 
 import yaml
+from pydantic import BaseModel
 
-from armored.catalogs import Schema
+from armored.dataset import Tbl
+
+
+class Schema(BaseModel):
+    name: str
+    objects: list[Tbl]
 
 
 class CatalogExample(unittest.TestCase):

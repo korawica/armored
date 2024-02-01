@@ -10,7 +10,7 @@
 - [Models](#models)
   - [Data Types](#data-types)
   - [Constraints](#constraints)
-  - [Catalogs](#catalogs)
+  - [Datasets](#datasets)
   - [Lineages](#lineages)
 - [Enums](#enums)
 - [Usecase](#usecase)
@@ -32,7 +32,7 @@ pip install -U armored
 ### Data Types
 
 ```python
-from armored.dtypes import StringType
+from armored.dtype import StringType
 
 dtype = StringType()
 assert dtype.type == "string"
@@ -42,17 +42,17 @@ assert dtype.max_length == -1
 ### Constraints
 
 ```python
-from armored.constraints import Pk
+from armored.const import Pk
 
 const = Pk(of="foo", cols=["bar", "baz"])
 assert const.name == "foo_bar_baz_pk"
 assert const.cols == ["bar", "baz"]
 ```
 
-### Catalogs
+### Datasets
 
 ```python
-from armored.catalogs import Col, Tbl
+from armored.dataset import Col, Tbl
 
 col = Col(name="foo", dtype="varchar( 100 )")
 assert "foo" == col.name
@@ -80,7 +80,12 @@ If I have some catalog config, it easy to pass this config to model object.
 
 ```python
 import yaml
-from armored.catalogs import Schema
+from pydantic import BaseModel
+from armored.dataset import Tbl
+
+class Schema(BaseModel):
+    name: str
+    objects: list[Tbl]
 
 config = yaml.safe_load("""
 name: "warehouse"

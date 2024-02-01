@@ -1,6 +1,6 @@
 import unittest
 
-import armored.catalogs as catalogs
+import armored.dataset as ds
 
 
 class TestBaseTable(unittest.TestCase):
@@ -8,13 +8,13 @@ class TestBaseTable(unittest.TestCase):
         self.maxDiff = None
 
     def test_base_table_init(self):
-        t = catalogs.BaseTbl(
+        t = ds.BaseTbl(
             name="foo",
-            schemas=[catalogs.Col(name="foo", dtype="varchar( 10 )")],
+            schemas=[ds.Col(name="foo", dtype="varchar( 10 )")],
         )
         self.assertListEqual(
             t.schemas,
-            [catalogs.Col(name="foo", dtype="varchar( 10 )")],
+            [ds.Col(name="foo", dtype="varchar( 10 )")],
         )
 
 
@@ -23,18 +23,18 @@ class TestTable(unittest.TestCase):
         self.maxDiff = None
 
     def test_table_init(self):
-        t = catalogs.Tbl(
+        t = ds.Tbl(
             name="foo",
-            schemas=[catalogs.Col(name="foo", dtype="varchar( 10 )")],
+            schemas=[ds.Col(name="foo", dtype="varchar( 10 )")],
         )
         self.assertListEqual(
             t.schemas,
-            [catalogs.Col(name="foo", dtype="varchar( 10 )")],
+            [ds.Col(name="foo", dtype="varchar( 10 )")],
         )
-        self.assertEqual(t.pk, catalogs.Pk(of="foo"))
+        self.assertEqual(t.pk, ds.Pk(of="foo"))
         self.assertListEqual(t.fk, [])
 
-        t = catalogs.Tbl(
+        t = ds.Tbl(
             name="foo", schemas=[{"name": "foo", "dtype": "varchar( 100 )"}]
         )
         self.assertDictEqual(
@@ -58,7 +58,7 @@ class TestTable(unittest.TestCase):
             },
         )
 
-        t = catalogs.Tbl(
+        t = ds.Tbl(
             name="foo",
             schemas=[{"name": "foo", "dtype": "varchar( 100 ) primary key"}],
         )
@@ -84,7 +84,7 @@ class TestTable(unittest.TestCase):
         )
 
     def test_table_init_with_pk(self):
-        t = catalogs.Tbl(
+        t = ds.Tbl(
             name="foo",
             schemas=[{"name": "id", "dtype": "integer", "pk": True}],
         )
@@ -110,7 +110,7 @@ class TestTable(unittest.TestCase):
         )
 
     def test_table_model_validate(self):
-        t = catalogs.Tbl.model_validate(
+        t = ds.Tbl.model_validate(
             {
                 "name": "foo",
                 "schemas": [
