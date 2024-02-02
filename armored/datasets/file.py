@@ -14,11 +14,27 @@ class BaseFl(BaseUpdatableModel):
 
 
 class CsvFl(BaseFl):
-    """Csv File model"""
+    """Csv File Model"""
 
     type: Literal["csv"] = "csv"
     header: bool = True
-    schema: list[Col]
+    feature: list[Col]
     sep: str = ","
     comment: str = "#"
     skip_rows: int = 0
+    skip_footer: int = 0
+    quote_char: str = '"'
+    encoding: str = "utf-8"
+
+
+class JsonFl(BaseFl):
+    """Json File Model"""
+
+    type: Literal["json"] = "json"
+
+
+class ParqFl(BaseFl):
+    """Parquet File Model"""
+
+    type: Literal["parquet"] = "parquet"
+    compress: str = "gzip"
