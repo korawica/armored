@@ -8,7 +8,7 @@ class TestDBConn(unittest.TestCase):
         self.maxDiff = None
 
     def test_db_conn_from_url(self):
-        t = conn.DBConn.from_url(
+        t = conn.DbConn.from_url(
             url=(
                 "postgres+psycopg://demo:P@ssw0rd@localhost:5432/db"
                 "?echo=True&timeout=10"
@@ -16,7 +16,22 @@ class TestDBConn(unittest.TestCase):
         )
         self.assertEqual("postgres+psycopg", t.driver)
 
-        t = conn.DBConn.from_url(
-            url="postgres+psycopg://demo:P@ssw0rd@localhost:5432/postgres"
+        t = conn.DbConn.from_url(
+            url="mssql://demo:P@ssw0rd@192.0.0.1:5432/postgres"
         )
+        self.assertEqual("mssql", t.driver)
+        self.assertEqual("192.0.0.1", t.host)
         self.assertEqual("P%40ssw0rd", t.pwd.get_secret_value())
+
+
+class TestFlConn(unittest.TestCase):
+    def setUp(self):
+        self.maxDiff = None
+
+    def test_fl_conn_from_url(self):
+        t = conn.FlConn.from_url(
+            url="sqlite:///D:/data/warehouse/main.sqlite?echo=True"
+        )
+        self.assertEqual("sqlite", t.sys)
+        self.assertEqual("/D:/data/warehouse/main.sqlite", t.path)
+        self.assertDictEqual({"echo": "True"}, t.options)

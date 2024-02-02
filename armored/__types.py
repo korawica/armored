@@ -15,3 +15,7 @@ CustomUrl = Annotated[
         default_port=1234,
     ),
 ]
+
+FileUrl = Annotated[
+    Url, UrlConstraints(default_host="localhost", default_port="22")
+]

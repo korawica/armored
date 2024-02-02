@@ -7,6 +7,7 @@ from typing import (
     Annotated,
     Any,
     Literal,
+    Optional,
     Union,
 )
 
@@ -19,25 +20,44 @@ from pydantic.functional_validators import (
 from pydantic.types import SecretStr
 
 from .__base import BaseUpdatableModel
-from .__types import CustomUrl
+from .__types import CustomUrl, FileUrl
 
 
 class BaseConn(BaseUpdatableModel):
     type: str = "base"
 
 
-class FileConn(BaseConn):
+class FlConn(BaseConn):
     type: Literal["file"] = "file"
     sys: str
-    pointer: str
-    port: int
-    user: str
-    pwd: SecretStr
+    pointer: Optional[str] = None
+    port: Optional[int] = None
+    user: Optional[str] = None
+    pwd: Optional[SecretStr] = None
     path: str
     options: Annotated[dict[str, Any], Field(default_factory=dict)]
 
+    @classmethod
+    def from_url(
+        cls,
+        url: Union[FileUrl, str],
+    ) -> "FlConn":
+        if isinstance(url, str):
+            url = FileUrl(url=url)
+        elif not isinstance(url, FileUrl):
+            raise ValueError("A url value must be string or `FileUrl` object")
+        return cls(
+            sys=url.scheme,
+            pointer=url.host,
+            port=url.port,
+            user=url.username,
+            pwd=url.password,
+            path=url.path,
+            options=dict(url.query_params()),
+        )
 
-class DBConn(BaseConn):
+
+class DbConn(BaseConn):
     """Database Connection Model
 
     Example:
@@ -60,11 +80,11 @@ class DBConn(BaseConn):
     def from_url(
         cls,
         url: Union[CustomUrl, str],
-    ) -> "DBConn":
+    ) -> "DbConn":
         if isinstance(url, str):
             url = CustomUrl(url=url)
         elif not isinstance(url, CustomUrl):
-            raise ValueError("A url value must be string or CustomUrl object")
+            raise ValueError("A url value must be string or `CustomUrl` object")
         return cls(
             driver=url.scheme,
             host=url.host,
