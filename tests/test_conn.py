@@ -17,10 +17,10 @@ class TestDBConn(unittest.TestCase):
         self.assertEqual("postgres+psycopg", t.driver)
 
         t = conn.DbConn.from_url(
-            url="mssql://demo:P@ssw0rd@192.0.0.1:5432/postgres"
+            url="mssql://demo:P@ssw0rd@127.0.0.1:5432/postgres"
         )
         self.assertEqual("mssql", t.driver)
-        self.assertEqual("192.0.0.1", t.host)
+        self.assertEqual("127.0.0.1", t.host)
         self.assertEqual("P%40ssw0rd", t.pwd.get_secret_value())
 
 

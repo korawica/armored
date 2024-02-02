@@ -52,7 +52,7 @@ assert const.cols == ["bar", "baz"]
 ### Datasets
 
 ```python
-from armored.dataset import Col, Tbl
+from armored.datasets import Col, Tbl
 
 col = Col(name="foo", dtype="varchar( 100 )")
 assert "foo" == col.name
@@ -61,13 +61,13 @@ assert 100 == col.dtype.max_length
 
 tbl = Tbl(
     name="foo",
-    schemas=[
+    feature=[
         Col(name="id", dtype="integer primary key"),
         Col(name="foo", dtype="varchar( 10 )"),
     ],
 )
 assert "foo" == tbl.name
-assert "id" == tbl.schemas[0].name
+assert "id" == tbl.feature[0].name
 ```
 
 ### Lineages
@@ -81,17 +81,19 @@ If I have some catalog config, it easy to pass this config to model object.
 ```python
 import yaml
 from pydantic import BaseModel
-from armored.dataset import Tbl
+from armored.datasets import Tbl
+
 
 class Schema(BaseModel):
     name: str
     objects: list[Tbl]
 
+
 config = yaml.safe_load("""
 name: "warehouse"
 objects:
   - name: "customer_master"
-    schemas:
+    feature:
       - name: "id"
         dtype: "integer"
         pk: true
@@ -99,8 +101,8 @@ objects:
         dtype: "varchar( 256 )"
         nullable: false
 """)
-schema = Schema.model_validate(config)
-assert 1 == len(schema.objects)
+feature = Schema.model_validate(config)
+assert 1 == len(feature.objects)
 ```
 
 ## License

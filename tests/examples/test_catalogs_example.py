@@ -3,7 +3,7 @@ import unittest
 import yaml
 from pydantic import BaseModel
 
-from armored.dataset import Tbl
+from armored.datasets.db import Tbl
 
 
 class Schema(BaseModel):
@@ -18,7 +18,7 @@ class CatalogExample(unittest.TestCase):
         name: "warehouse"
         objects:
           - name: "customer_master"
-            schemas:
+            feature:
               - name: "id"
                 dtype: "integer"
                 pk: true

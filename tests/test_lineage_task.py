@@ -1,6 +1,6 @@
 import unittest
 
-import armored.lineages as lineages
+import armored.lineage as lineages
 from armored.enums.status import Status
 
 

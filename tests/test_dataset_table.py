@@ -1,6 +1,6 @@
 import unittest
 
-import armored.dataset as ds
+import armored.datasets.db as db
 
 
 class TestBaseTable(unittest.TestCase):
@@ -8,13 +8,13 @@ class TestBaseTable(unittest.TestCase):
         self.maxDiff = None
 
     def test_base_table_init(self):
-        t = ds.BaseTbl(
+        t = db.BaseTbl(
             name="foo",
-            schemas=[ds.Col(name="foo", dtype="varchar( 10 )")],
+            feature=[db.Col(name="foo", dtype="varchar( 10 )")],
         )
         self.assertListEqual(
-            t.schemas,
-            [ds.Col(name="foo", dtype="varchar( 10 )")],
+            t.feature,
+            [db.Col(name="foo", dtype="varchar( 10 )")],
         )
 
 
@@ -23,25 +23,25 @@ class TestTable(unittest.TestCase):
         self.maxDiff = None
 
     def test_table_init(self):
-        t = ds.Tbl(
+        t = db.Tbl(
             name="foo",
-            schemas=[ds.Col(name="foo", dtype="varchar( 10 )")],
+            feature=[db.Col(name="foo", dtype="varchar( 10 )")],
         )
         self.assertListEqual(
-            t.schemas,
-            [ds.Col(name="foo", dtype="varchar( 10 )")],
+            t.feature,
+            [db.Col(name="foo", dtype="varchar( 10 )")],
         )
-        self.assertEqual(t.pk, ds.Pk(of="foo"))
+        self.assertEqual(t.pk, db.Pk(of="foo"))
         self.assertListEqual(t.fk, [])
 
-        t = ds.Tbl(
-            name="foo", schemas=[{"name": "foo", "dtype": "varchar( 100 )"}]
+        t = db.Tbl(
+            name="foo", feature=[{"name": "foo", "dtype": "varchar( 100 )"}]
         )
         self.assertDictEqual(
             t.model_dump(by_alias=False),
             {
                 "name": "foo",
-                "schemas": [
+                "feature": [
                     {
                         "check": None,
                         "default": None,
@@ -58,15 +58,15 @@ class TestTable(unittest.TestCase):
             },
         )
 
-        t = ds.Tbl(
+        t = db.Tbl(
             name="foo",
-            schemas=[{"name": "foo", "dtype": "varchar( 100 ) primary key"}],
+            feature=[{"name": "foo", "dtype": "varchar( 100 ) primary key"}],
         )
         self.assertDictEqual(
             t.model_dump(by_alias=False),
             {
                 "name": "foo",
-                "schemas": [
+                "feature": [
                     {
                         "check": None,
                         "default": None,
@@ -84,15 +84,15 @@ class TestTable(unittest.TestCase):
         )
 
     def test_table_init_with_pk(self):
-        t = ds.Tbl(
+        t = db.Tbl(
             name="foo",
-            schemas=[{"name": "id", "dtype": "integer", "pk": True}],
+            feature=[{"name": "id", "dtype": "integer", "pk": True}],
         )
         self.assertDictEqual(
             t.model_dump(by_alias=False),
             {
                 "name": "foo",
-                "schemas": [
+                "feature": [
                     {
                         "check": None,
                         "default": None,
@@ -110,10 +110,10 @@ class TestTable(unittest.TestCase):
         )
 
     def test_table_model_validate(self):
-        t = ds.Tbl.model_validate(
+        t = db.Tbl.model_validate(
             {
                 "name": "foo",
-                "schemas": [
+                "feature": [
                     {"name": "id", "dtype": "integer", "pk": True},
                     {
                         "name": "name",
@@ -127,7 +127,7 @@ class TestTable(unittest.TestCase):
             t.model_dump(by_alias=False),
             {
                 "name": "foo",
-                "schemas": [
+                "feature": [
                     {
                         "check": None,
                         "default": None,

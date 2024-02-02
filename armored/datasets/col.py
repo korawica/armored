@@ -11,20 +11,17 @@ from typing import (
     Union,
 )
 
-from pydantic import (
-    Field,
-    ValidationInfo,
-)
+from pydantic import Field
 from pydantic.functional_validators import (
     field_validator,
     model_validator,
 )
 
-from .__base import BaseUpdatableModel
-from .const import Fk, Pk, Ref
-from .dtype import Dtype
-from .settings import ColumnSetting
-from .utils import (
+from ..__base import BaseUpdatableModel
+from ..const import Ref
+from ..dtype import Dtype
+from ..settings import ColumnSetting
+from ..utils import (
     catch_str,
     extract_dtype,
     only_one,
@@ -193,60 +190,8 @@ class Col(BaseCol):
 
         # RULE: primary key and nullable does not True together
         if self.pk and nullable:
-            # raise ValueError("`pk` and `nullable` can not be True together")
+            # Raise: ValueError("`pk` and `nullable` can not be True together")
             self.nullable = False
         if (default is not None) and nullable:
             raise ValueError("`nullable` can not be True if `default` was set")
         return self
-
-
-class BaseTbl(BaseUpdatableModel):
-    """Base Table Model"""
-
-    name: str
-    schemas: Annotated[
-        list[Col],
-        Field(
-            default_factory=list,
-            description="Schema of this Table",
-        ),
-    ]
-
-
-class Tbl(BaseTbl):
-    """Table Model"""
-
-    pk: Annotated[
-        Pk,
-        Field(validate_default=True, description="Primary Key"),
-    ] = Pk()
-    fk: Annotated[
-        list[Fk],
-        Field(default_factory=list, description="Foreign Key"),
-    ]
-
-    @field_validator("pk")
-    def prepare_pk_from_schemas(
-        cls,
-        value: Pk,
-        info: ValidationInfo,
-    ) -> Pk:
-        # Note: we respect that `info.data` should contain schemas before `pk`
-        #   validation.
-        pks: list[str] = [
-            i.name for i in filter(lambda x: x.pk, info.data["schemas"])
-        ]
-        if pks and not value.cols:
-            # Note: pass primary key cols if `pk` does not set.
-            value = Pk(cols=list(pks))
-
-        # Note: change name of `pk` with parent Tbl class name
-        value.of = info.data["name"]
-        return value
-
-    @field_validator("fk")
-    def prepare_fk(cls, value: list[Fk], info: ValidationInfo) -> list[Fk]:
-        # Note: change name of `fk` with parent Tbl class name
-        for fk in value:
-            fk.of = info.data["name"]
-        return value

@@ -3,12 +3,12 @@ import unittest
 from unittest import mock
 from zoneinfo import ZoneInfo
 
-import armored.lineages as lineages
+import armored.lineage as lineages
 import armored.settings as st
 
 
 class TestTS(unittest.TestCase):
-    @mock.patch("armored.lineages.datetime", wraps=datetime.datetime)
+    @mock.patch("armored.lineage.datetime", wraps=datetime.datetime)
     def test_ts_init(self, mock_datetime):
         mock_datetime.utcnow.return_value = datetime.datetime(
             2023, 1, 1, 0, 0, 0
@@ -26,8 +26,8 @@ class TestTS(unittest.TestCase):
 
 
 class TestTag(unittest.TestCase):
-    @mock.patch("armored.lineages.date", wraps=datetime.date)
-    @mock.patch("armored.lineages.datetime", wraps=datetime.datetime)
+    @mock.patch("armored.lineage.date", wraps=datetime.date)
+    @mock.patch("armored.lineage.datetime", wraps=datetime.datetime)
     def test_tag_init(self, mock_datetime, mock_date):
         mock_date.return_value = datetime.date(2023, 1, 1)
         mock_datetime.utcnow.return_value = datetime.datetime(
