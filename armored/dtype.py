@@ -23,7 +23,12 @@ class BaseType(BaseModel):
 
 
 class StringType(BaseType):
-    """String Type"""
+    """String Type
+
+    Note:
+        This type will be the base of any string type that able to fixed length
+    or not.
+    """
 
     type: Literal["string", "str"] = "string"
     max_length: Annotated[int, Field(ge=-1)] = -1
@@ -108,8 +113,10 @@ class NumericType(BaseType):
     scale: Annotated[int, Field(ge=-1)] = -1
 
     def __str__(self) -> str:
-        _scale: str = f", {self.scale}" if self.scale > -1 else ""
-        return f"{self.type}( {self.precision}{_scale} )"
+        if self.precision > -1:
+            _scale: str = f", {self.scale}" if self.scale > -1 else ""
+            return f"{self.type}( {self.precision}{_scale} )"
+        return self.type
 
 
 class DecimalType(NumericType):
