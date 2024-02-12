@@ -1,6 +1,7 @@
 # Utility Package: *Armored*
 
 [![test](https://github.com/korawica/armored/actions/workflows/tests.yml/badge.svg?branch=main)](https://github.com/korawica/armored/actions/workflows/tests.yml)
+[![codecov](https://codecov.io/gh/korawica/armored/graph/badge.svg?token=OOUHC5SW4A)](https://codecov.io/gh/korawica/armored)
 [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/armored?logo=pypi)](https://pypi.org/project/armored/)
 [![size](https://img.shields.io/github/languages/code-size/korawica/armored)](https://github.com/korawica/armored)
 
