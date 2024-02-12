@@ -2,6 +2,28 @@
 
 ## Latest Changes
 
+## 0.0.3
+
+### Features
+
+- :dart: feat: add file model for json and parquet. (_2024-02-02_)
+- :dart: feat: add Connection model for support url connection string. (_2024-02-02_)
+
+### Code Changes
+
+- :construction: refactored: create folder for datasets that contain file and db. (_2024-02-02_)
+- :construction: refactored: ⬆ bump actions/cache from 3 to 4 (_2024-02-01_)
+- :construction: refactored: move Col and Tbl from catalogs to dataset. (_2024-02-01_)
+- :construction: refactored: change folder name for abbrevation. (_2024-02-01_)
+
+### Documents
+
+- :page_facing_up: docs: update API docs for list all models on data types. (_2024-02-12_)
+
+### Build & Workflow
+
+- :toolbox: build: add ci workflow for upload coverage report. (_2024-02-12_)
+
 ## 0.0.2
 
 ### Features
