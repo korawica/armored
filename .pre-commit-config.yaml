@@ -3,7 +3,7 @@ default_language_version:
     python: python3.9
 
 ci:
-    skip: [pytest-check, commit-msg-hook]
+    skip: [pytest-check, shelf-commit-msg]
     autofix_commit_msg: |
         🚧 [pre-commit.ci] auto fixes from pre-commit.com hooks
     autofix_prs: true
@@ -56,7 +56,7 @@ repos:
 -   repo: local
     hooks:
     -   id: pytest-check
-        name: PyTest Runner
+        name: pytest runner
         stages: [ push ]
         types: [ python ]
         entry: venv/Scripts/pytest.exe -v
