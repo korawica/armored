@@ -48,16 +48,13 @@ repos:
     -   id: check-toml
         stages: [ commit ]
 
+-   repo: https://github.com/korawica/clishelf
+    rev: v0.1.6
+    hooks:
+    -   id: shelf-commit-msg
+
 -   repo: local
     hooks:
-    -   id: commit-msg-hook
-        name: Prepare Commit Message
-        stages: [ commit-msg ]
-        types: [ python ]
-        entry: venv/Scripts/shelf.exe git cm -e -l -o
-        language: system
-        always_run: true
-
     -   id: pytest-check
         name: PyTest Runner
         stages: [ push ]
