@@ -1,5 +1,5 @@
 # docs: https://github.com/marketplace/actions/python-coverage-comment
-name: ci
+name: coverage
 
 on:
   push:
