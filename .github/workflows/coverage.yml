@@ -82,7 +82,7 @@ jobs:
         uses: actions/download-artifact@v4
         id: download
         with:
-          name: coverage-*
+          pattern: coverage-*
           path: coverage
           merge-multiple: true
 
